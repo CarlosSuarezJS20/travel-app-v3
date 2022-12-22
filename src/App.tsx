@@ -10,7 +10,7 @@ function App() {
       <Box>
         <Typography>Travel-app-V3</Typography>
         <Button variant='contained' color='primary'>
-          Let's start
+          Let's start the travel app
         </Button>
       </Box>
     </ThemeProvider>
