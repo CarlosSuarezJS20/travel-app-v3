@@ -6,6 +6,7 @@ import "@mui/material/styles/createPalette";
 enum themePalette {
   ARCPURPLE = "#a625b9",
   ARCGREY = "#868686",
+  ARCWHITE = "ffff",
 }
 
 enum typographyFonts {}
@@ -33,7 +34,6 @@ declare module "@mui/material/Typography" {
 
 declare module "@mui/material/styles/createPalette" {
   interface CommonColors {
-    purple: string;
     grey: string;
   }
 }
@@ -41,13 +41,13 @@ declare module "@mui/material/styles/createPalette" {
 const theme = createTheme({
   palette: {
     primary: {
-      main: themePalette.ARCPURPLE,
+      main: themePalette.ARCWHITE,
     },
     secondary: {
-      main: themePalette.ARCGREY,
+      main: themePalette.ARCPURPLE,
     },
     common: {
-      purple: themePalette.ARCPURPLE,
+      grey: themePalette.ARCGREY,
     },
   },
   typography: {},

@@ -1,20 +1,18 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+
 import { ThemeProvider } from "@mui/material/styles";
+
+// components for UI
+import ToolBar from "./ui/components/navigation/appbar";
 
 import theme from "./theme";
 
-function App() {
+const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Box>
-        <Typography>Travel-app-V3 take 2</Typography>
-        <Button variant='contained' color='primary'>
-          Let's start
-        </Button>
-      </Box>
+      <ToolBar />
     </ThemeProvider>
   );
-}
+};
 
 export default App;
