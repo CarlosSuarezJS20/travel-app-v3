@@ -8,9 +8,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box>
-        <Typography>Travel-app-V3</Typography>
+        <Typography>Travel-app-V3 take 2</Typography>
         <Button variant='contained' color='primary'>
-          Let's start the travel app
+          Let's start
         </Button>
       </Box>
     </ThemeProvider>
