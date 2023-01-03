@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Tabs, Tab, Hidden } from "@mui/material";
+import React, { useState } from "react";
+import { Tabs, Tab } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
+import { logIn, logOut } from "../../../store/reducers/authenticationReducer";
 
 import { makeStyles } from "@mui/styles";
 
@@ -16,13 +18,21 @@ const useStyles = makeStyles(() => ({
 
 const NavigationTabs: React.FC = () => {
   const [tabValue, setTabValue] = useState("home");
-  const [isLoggedIn, setIsLogIn] = useState(false);
+  const authenticationState = useAppSelector(
+    (state) => state.autheticationReducer
+  );
+  const dispatch = useAppDispatch();
 
   const classes = useStyles();
 
   //   temporal log in handler
-  const handlesIsLogIn = () => {
-    setIsLogIn((prev) => !prev);
+  const handlesLogIn = () => {
+    dispatch(logIn());
+    // request
+  };
+
+  const handleslogOut = () => {
+    dispatch(logOut());
   };
 
   const handleTabChange = (e: React.SyntheticEvent, tabValue: string) => {
@@ -37,14 +47,17 @@ const NavigationTabs: React.FC = () => {
       indicatorColor='secondary'
       onChange={handleTabChange}>
       <Tab label='Home' value='home' className={classes.menuTab} />
+
       <Tab label='About' value='about' className={classes.menuTab} />
-      <Tab label='Countries' value='countries' className={classes.menuTab} />
-      {isLoggedIn ? (
+      {authenticationState.isAuthenticated ? (
+        <Tab label='Countries' value='countries' className={classes.menuTab} />
+      ) : null}
+      {authenticationState.isAuthenticated ? (
         <Tab
           label='Log out'
           value='Log out'
           onClick={() => {
-            handlesIsLogIn();
+            handleslogOut();
           }}
           className={classes.menuTab}
         />
@@ -53,7 +66,7 @@ const NavigationTabs: React.FC = () => {
           label='Log in'
           value='Log in'
           onClick={() => {
-            handlesIsLogIn();
+            handlesLogIn();
           }}
           className={classes.menuTab}
         />
