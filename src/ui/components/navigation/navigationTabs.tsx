@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tabs, Tab } from "@mui/material";
+import { Tabs, Tab, Button, Grid } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
 import { logIn, logOut } from "../../../store/reducers/authenticationReducer";
 
@@ -40,38 +40,42 @@ const NavigationTabs: React.FC = () => {
   };
 
   return (
-    <Tabs
-      value={tabValue}
-      aria-label='secondary tabs example'
-      textColor='secondary'
-      indicatorColor='secondary'
-      onChange={handleTabChange}>
-      <Tab label='Home' value='home' className={classes.menuTab} />
+    <Grid container>
+      <Tabs
+        value={tabValue}
+        aria-label='secondary tabs example'
+        textColor='secondary'
+        indicatorColor='secondary'
+        onChange={handleTabChange}>
+        <Tab label='Home' value='home' className={classes.menuTab} />
 
-      <Tab label='About' value='about' className={classes.menuTab} />
+        <Tab label='About' value='about' className={classes.menuTab} />
+        {authenticationState.isAuthenticated && (
+          <Tab
+            label='Countries'
+            value='countries'
+            className={classes.menuTab}
+          />
+        )}
+      </Tabs>
       {authenticationState.isAuthenticated ? (
-        <Tab label='Countries' value='countries' className={classes.menuTab} />
-      ) : null}
-      {authenticationState.isAuthenticated ? (
-        <Tab
-          label='Log out'
-          value='Log out'
+        <Button
+          variant='contained'
           onClick={() => {
             handleslogOut();
-          }}
-          className={classes.menuTab}
-        />
+          }}>
+          Log out
+        </Button>
       ) : (
-        <Tab
-          label='Log in'
-          value='Log in'
+        <Button
+          variant='contained'
           onClick={() => {
             handlesLogIn();
-          }}
-          className={classes.menuTab}
-        />
+          }}>
+          Log in
+        </Button>
       )}
-    </Tabs>
+    </Grid>
   );
 };
 
