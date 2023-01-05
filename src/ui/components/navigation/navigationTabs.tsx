@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Button, Grid } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
-import { logIn, logOut } from "../../../store/reducers/authenticationReducer";
+import {
+  logIn,
+  logOut,
+  setUserCredentials,
+} from "../../../store/reducers/authenticationReducer";
 
 import { makeStyles } from "@mui/styles";
 
@@ -33,6 +37,7 @@ const NavigationTabs: React.FC = () => {
 
   const handleslogOut = () => {
     dispatch(logOut());
+    dispatch(setUserCredentials({ localId: null, idToken: null }));
   };
 
   const handleTabChange = (e: React.SyntheticEvent, tabValue: string) => {

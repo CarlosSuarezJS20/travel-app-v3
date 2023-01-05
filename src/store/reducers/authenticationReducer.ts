@@ -9,10 +9,18 @@ const persistConfig = {
 
 interface authenticationState {
   isAuthenticated: boolean;
+  userInfo: {
+    localId: string | null;
+    idToken: string | null;
+  };
 }
 
 const initialAuthenticationState: authenticationState = {
   isAuthenticated: false,
+  userInfo: {
+    localId: null,
+    idToken: null,
+  },
 };
 
 export const counterSlice = createSlice({
@@ -25,10 +33,19 @@ export const counterSlice = createSlice({
     logOut: (state) => {
       state.isAuthenticated = false;
     },
+    setUserCredentials: (
+      state,
+      {
+        payload: { localId, idToken },
+      }: PayloadAction<{ localId: string | null; idToken: string | null }>
+    ) => {
+      state.userInfo.localId = localId;
+      state.userInfo.idToken = idToken;
+    },
   },
 });
 
-export const { logIn, logOut } = counterSlice.actions;
+export const { logIn, logOut, setUserCredentials } = counterSlice.actions;
 
 export const persistedAuthenticationReducer = persistReducer(
   persistConfig,
