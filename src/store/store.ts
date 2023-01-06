@@ -3,6 +3,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore } from "redux-persist";
 
 import { persistedAuthenticationReducer } from "./reducers/authenticationReducer";
+import itemsReducer from "./reducers/getItemsReducer";
+
 import { authApi } from "./apis/authApi";
 
 export const rootStore = configureStore({
@@ -10,6 +12,7 @@ export const rootStore = configureStore({
     // api
     [authApi.reducerPath]: authApi.reducer,
     autheticationReducer: persistedAuthenticationReducer,
+    getItemsReducer: itemsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware),

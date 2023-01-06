@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useState } from "react";
+import { useQuery } from "react-query";
 
 import { ThemeProvider } from "@mui/material/styles";
 import { Input, Box, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 // components for UI
 import Header from "./ui/components/navigation/header";
@@ -15,13 +16,23 @@ import {
   setUserCredentials,
 } from "./store/reducers/authenticationReducer";
 
+//items
+import { getTravelItems } from "./store/reducers/getItemsReducer";
+
 import theme from "./theme";
 
 const App: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading }] = useLoginMutation();
-  const dispatch = useDispatch();
+  // authentication hook http req
+  const [login, { loading }] = useLoginMutation();
+  const dispatch = useAppDispatch();
+
+  // items
+  const { isSuccess, isLoading, error } = useQuery("items", () =>
+    dispatch(getTravelItems())
+  );
+  const itemsState = useAppSelector((state) => state.getItemsReducer);
 
   const onChangeInputHandler = (
     e: ChangeEvent<HTMLInputElement>,
@@ -72,7 +83,22 @@ const App: React.FC = () => {
           }}>
           Log in
         </Button>
-        {isLoading && <Box>LOADING</Box>}
+        {loading && <Box>LOADING</Box>}
+      </Box>
+      <Box>
+        {isLoading ? (
+          <Box>loading...</Box>
+        ) : error ? (
+          <p>there is an error </p>
+        ) : isSuccess ? (
+          <Box>
+            {itemsState.items.map((item, i: number) => (
+              <p key={i}>{item.itemName}</p>
+            ))}
+          </Box>
+        ) : (
+          <Box>No data</Box>
+        )}
       </Box>
     </ThemeProvider>
   );

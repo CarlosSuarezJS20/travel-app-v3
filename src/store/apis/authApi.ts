@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 
+// Types
 export interface UserResponse {
   user: string;
   token: string;
@@ -33,10 +34,7 @@ export const authApi: any = createApi({
         body: credentials,
       }),
     }),
-    protected: builder.mutation<{ message: string }, void>({
-      query: () => "protected",
-    }),
   }),
 });
 
-export const { useLoginMutation, useProtectedMutation } = authApi;
+export const { useLoginMutation } = authApi;
