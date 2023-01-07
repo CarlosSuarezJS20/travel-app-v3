@@ -1,11 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-
-const persistConfig = {
-  key: "root",
-  storage,
-};
 
 interface authenticationState {
   isAuthenticated: boolean;
@@ -13,6 +6,7 @@ interface authenticationState {
     localId: string | null;
     idToken: string | null;
   };
+  authenticationReqError: null | string;
 }
 
 const initialAuthenticationState: authenticationState = {
@@ -21,6 +15,7 @@ const initialAuthenticationState: authenticationState = {
     localId: null,
     idToken: null,
   },
+  authenticationReqError: null,
 };
 
 export const counterSlice = createSlice({
@@ -29,6 +24,11 @@ export const counterSlice = createSlice({
   reducers: {
     logIn: (state) => {
       state.isAuthenticated = true;
+    },
+    // created this to help deal with error from logIn call
+    autheticationReqError: (state, action) => {
+      console.log(action.payload.error);
+      state.authenticationReqError = action.payload.error;
     },
     logOut: (state) => {
       state.isAuthenticated = false;
@@ -45,9 +45,7 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { logIn, logOut, setUserCredentials } = counterSlice.actions;
+export const { logIn, logOut, setUserCredentials, autheticationReqError } =
+  counterSlice.actions;
 
-export const persistedAuthenticationReducer = persistReducer(
-  persistConfig,
-  counterSlice.reducer
-);
+export default counterSlice.reducer;

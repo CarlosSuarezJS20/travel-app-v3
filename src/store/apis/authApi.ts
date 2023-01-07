@@ -15,7 +15,7 @@ export interface LoginRequest {
 
 export const authApi: any = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://identitytoolkit.googleapis.com/v1/",
+    baseUrl: "https://identitytoolkit.ggleapis.com/v1/",
     prepareHeaders: (headers, { getState }: any) => {
       // By default, if we have a token in the store, let's use that for authenticated requests
       const token = (getState() as RootState).autheticationReducer.userInfo

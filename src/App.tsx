@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Input, Box, Button, Switch } from "@mui/material";
+import { Input, Box, Button } from "@mui/material";
 
 // components for UI
 import Header from "./ui/components/navigation/header";
@@ -13,6 +13,7 @@ import type { LoginRequest } from "./store/apis/authApi";
 import {
   logIn,
   setUserCredentials,
+  autheticationReqError,
 } from "./store/reducers/authenticationReducer";
 
 //items
@@ -21,14 +22,16 @@ import { getTravelItems } from "./store/reducers/getItemsReducer";
 import theme from "./theme";
 
 const App = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   // authentication hook http req
   const [login, { loading }] = useLoginMutation();
   const dispatch = useAppDispatch();
   // state
   const { reqStatus, error, travelItems } = useAppSelector(
     (state) => state.getItemsReducer
+  );
+  const { authenticationReqError } = useAppSelector(
+    (state) => state.autheticationReducer
   );
 
   useEffect(() => {
@@ -37,33 +40,25 @@ const App = () => {
     }
   }, [reqStatus, dispatch]);
 
-  const onChangeInputHandler = (
-    e: ChangeEvent<HTMLInputElement>,
-    inputName?: string
-  ) => {
-    switch (inputName) {
-      case "password":
-        setPassword(e.target.value);
-        break;
-      default:
-        setEmail(e.target.value);
-    }
+  const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handlesOnClick = async () => {
     const requestBody: LoginRequest = {
-      email: email,
-      password: password,
+      ...credentials,
       returnSecureToken: true,
     };
 
     try {
       const user = await login(requestBody).unwrap();
       dispatch(setUserCredentials(user));
-      console.log("here dispaching");
       dispatch(logIn());
     } catch (err) {
-      dispatch(logIn());
+      dispatch(autheticationReqError(err));
     }
   };
 
@@ -89,12 +84,21 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Header />
       <Box sx={{ margin: "100px", "& > :not(style)": { m: 2 } }}>
-        <Input onChange={onChangeInputHandler} placeholder='email' />
         <Input
-          placeholder='password'
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            onChangeInputHandler(e, "password");
-          }}
+          id='email'
+          type='email'
+          value={credentials.email}
+          onChange={onChangeInputHandler}
+          name='email'
+          placeholder='Enter your email'
+        />
+        <Input
+          id='password'
+          type='password'
+          value={credentials.password}
+          onChange={onChangeInputHandler}
+          name='password'
+          placeholder='Enter your password'
         />
         <Button
           variant='contained'
@@ -103,7 +107,11 @@ const App = () => {
           }}>
           Log in
         </Button>
-        {loading && <Box>LOADING</Box>}
+        {loading ? (
+          <Box>LOADING</Box>
+        ) : authenticationReqError ? (
+          <p>Something went wrong!</p>
+        ) : null}
       </Box>
       <Box>{travelItemsElements}</Box>
     </ThemeProvider>

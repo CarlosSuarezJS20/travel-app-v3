@@ -17,9 +17,21 @@ export const getTravelItems = createAsyncThunk(
   }
 );
 
+type travelItem = {
+  id: string;
+  category: string;
+  itemName: string;
+  country: string;
+  image: string;
+  description: string;
+  price: number;
+};
+
+type requestStatus = "idle" | "pending" | "succeeded" | "failed";
+
 interface state {
-  reqStatus: "idle" | "pending" | "succeeded" | "failed";
-  travelItems: { itemName: string }[];
+  reqStatus: requestStatus;
+  travelItems: travelItem[];
   error: null | string | undefined;
 }
 
