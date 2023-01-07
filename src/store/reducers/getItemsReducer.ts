@@ -1,31 +1,31 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import storage from "redux-persist/lib/storage";
-import { persistReducer } from "redux-persist";
+import axios, { AxiosError } from "axios";
 
-export const getTravelItems: any = createAsyncThunk(
+const baseURL = "https://budget-world-reactjs.firebaseio.com";
+
+// Fetches all items from Server
+export const getTravelItems = createAsyncThunk(
   "items/fetchItems",
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const responseItems = await axios.get(
-        "https://budget-world-reactjs.firebaseio.com/items.json"
-      );
+      const responseItems = await axios.get(`${baseURL}/items.json`);
       return responseItems.data;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const error_body = error as AxiosError;
+      return rejectWithValue(error_body);
     }
   }
 );
 
 interface state {
-  loading: boolean;
-  items: { itemName: string }[];
-  error: null | any;
+  reqStatus: "idle" | "pending" | "succeeded" | "failed";
+  travelItems: { itemName: string }[];
+  error: null | string | undefined;
 }
 
 const initialState: state = {
-  loading: false,
-  items: [],
+  reqStatus: "idle",
+  travelItems: [],
   error: null,
 };
 
@@ -33,27 +33,27 @@ const itemsSlice = createSlice({
   name: "items",
   initialState,
   reducers: {},
-  extraReducers: {
-    // The reducer for the fetchUser async action
-    [getTravelItems.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [getTravelItems.fulfilled]: (state, action) => {
-      const fetchedItems = [];
-      for (let item in action.payload) {
-        fetchedItems.push({
-          ...action.payload[item],
-          id: item,
-        });
-      }
-      state.loading = false;
-      state.items = fetchedItems;
-    },
-    [getTravelItems.rejected]: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTravelItems.pending, (state) => {
+        state.reqStatus = "pending";
+      })
+      .addCase(getTravelItems.fulfilled, (state, action) => {
+        //  Modelling data before I update the state
+        const fetchedItems = [];
+        for (let item in action.payload) {
+          fetchedItems.push({
+            ...action.payload[item],
+            id: item,
+          });
+        }
+        state.reqStatus = "succeeded";
+        state.travelItems = fetchedItems;
+      })
+      .addCase(getTravelItems.rejected, (state, payload) => {
+        state.reqStatus = "failed";
+        state.error = payload.error.message;
+      });
   },
 });
 

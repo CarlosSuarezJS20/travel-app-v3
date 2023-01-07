@@ -1,9 +1,8 @@
-import React, { ChangeEvent, useState } from "react";
-import { useQuery } from "react-query";
+import React, { ChangeEvent, useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Input, Box, Button } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "./store/storeHooks";
+import { Input, Box, Button, Switch } from "@mui/material";
 
 // components for UI
 import Header from "./ui/components/navigation/header";
@@ -21,18 +20,22 @@ import { getTravelItems } from "./store/reducers/getItemsReducer";
 
 import theme from "./theme";
 
-const App: React.FC = () => {
+const App = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // authentication hook http req
   const [login, { loading }] = useLoginMutation();
   const dispatch = useAppDispatch();
-
-  // items
-  const { isSuccess, isLoading, error } = useQuery("items", () =>
-    dispatch(getTravelItems())
+  // state
+  const { reqStatus, error, travelItems } = useAppSelector(
+    (state) => state.getItemsReducer
   );
-  const itemsState = useAppSelector((state) => state.getItemsReducer);
+
+  useEffect(() => {
+    if (reqStatus === "idle") {
+      dispatch(getTravelItems());
+    }
+  }, [reqStatus, dispatch]);
 
   const onChangeInputHandler = (
     e: ChangeEvent<HTMLInputElement>,
@@ -60,10 +63,27 @@ const App: React.FC = () => {
       console.log("here dispaching");
       dispatch(logIn());
     } catch (err) {
-      console.log(err);
       dispatch(logIn());
     }
   };
+
+  let travelItemsElements;
+
+  switch (reqStatus) {
+    case "pending":
+      travelItemsElements = <p>Loading</p>;
+      break;
+    case "succeeded":
+      travelItemsElements = travelItems.map((item, i: number) => (
+        <p key={i}>{item.itemName}</p>
+      ));
+      break;
+    case "failed":
+      travelItemsElements = <p>{error}</p>;
+      break;
+    default:
+      travelItemsElements = null;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -85,21 +105,7 @@ const App: React.FC = () => {
         </Button>
         {loading && <Box>LOADING</Box>}
       </Box>
-      <Box>
-        {isLoading ? (
-          <Box>loading...</Box>
-        ) : error ? (
-          <p>there is an error </p>
-        ) : isSuccess ? (
-          <Box>
-            {itemsState.items.map((item, i: number) => (
-              <p key={i}>{item.itemName}</p>
-            ))}
-          </Box>
-        ) : (
-          <Box>No data</Box>
-        )}
-      </Box>
+      <Box>{travelItemsElements}</Box>
     </ThemeProvider>
   );
 };
