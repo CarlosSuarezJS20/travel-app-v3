@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch } from "./store/storeHooks";
+import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
 import { Input, Box, Button } from "@mui/material";
@@ -25,6 +25,9 @@ const App = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   // authentication hook http req
   const [login, { loading }] = useLoginMutation();
+  const authenticationState = useAppSelector(
+    (state) => state.autheticationReducer
+  );
   const dispatch = useAppDispatch();
 
   const {
@@ -59,26 +62,16 @@ const App = () => {
   let itemsElements;
 
   if (isSuccess) {
-    const fetchedItems = [];
-    for (let item in newTravelItems) {
-      fetchedItems.push({
-        ...newTravelItems[item],
-        id: item,
-      });
-    }
-    itemsElements = fetchedItems.map((item) => (
+    itemsElements = newTravelItems.map((item) => (
       <p key={item.id}>{item.itemName}</p>
     ));
-    console.log("render data");
   }
   if (isLoading) {
     itemsElements = <p>loading...</p>;
-    console.log("loading data");
   }
   if (isError) {
     console.log(isError);
     itemsElements = <p>oops! something went wrong</p>;
-    console.log("there is an error");
   }
 
   return (
@@ -108,6 +101,15 @@ const App = () => {
           }}>
           Log in
         </Button>
+        <Box>
+          {loading ? (
+            <p>loading...</p>
+          ) : authenticationState.isAuthenticated ? (
+            <p>you are logged in</p>
+          ) : authenticationState.authenticationReqError ? (
+            <p>Opps! Something went wrong</p>
+          ) : null}
+        </Box>
         <Box>{itemsElements}</Box>
       </Box>
     </ThemeProvider>

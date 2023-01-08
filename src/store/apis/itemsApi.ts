@@ -20,6 +20,17 @@ export const getItemsReqApi = createApi({
     getTravelItems: builder.query<response, null>({
       query: () => "/items.json",
       providesTags: ["items"],
+      transformResponse: (rawResults: response) => {
+        const fetchedItems: response = [];
+        for (let item in rawResults) {
+          fetchedItems.push({
+            ...rawResults[item],
+            id: item,
+          });
+        }
+
+        return fetchedItems;
+      },
     }),
   }),
 });
