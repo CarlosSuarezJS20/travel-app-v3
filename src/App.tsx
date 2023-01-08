@@ -1,5 +1,5 @@
-import { ChangeEvent, useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "./store/storeHooks";
+import { ChangeEvent, useState } from "react";
+import { useAppDispatch } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
 import { Input, Box, Button } from "@mui/material";
@@ -16,8 +16,8 @@ import {
   autheticationReqError,
 } from "./store/reducers/authenticationReducer";
 
-//items
-import { getTravelItems } from "./store/reducers/getItemsReducer";
+// items
+import { useGetTravelItemsQuery } from "./store/apis/itemsApi";
 
 import theme from "./theme";
 
@@ -26,19 +26,13 @@ const App = () => {
   // authentication hook http req
   const [login, { loading }] = useLoginMutation();
   const dispatch = useAppDispatch();
-  // state
-  const { reqStatus, error, travelItems } = useAppSelector(
-    (state) => state.getItemsReducer
-  );
-  const { authenticationReqError } = useAppSelector(
-    (state) => state.autheticationReducer
-  );
 
-  useEffect(() => {
-    if (reqStatus === "idle") {
-      dispatch(getTravelItems());
-    }
-  }, [reqStatus, dispatch]);
+  const {
+    data: newTravelItems,
+    isError,
+    isLoading,
+    isSuccess,
+  } = useGetTravelItemsQuery(null);
 
   const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials((prevCredentials) => ({
@@ -62,22 +56,29 @@ const App = () => {
     }
   };
 
-  let travelItemsElements;
+  let itemsElements;
 
-  switch (reqStatus) {
-    case "pending":
-      travelItemsElements = <p>Loading</p>;
-      break;
-    case "succeeded":
-      travelItemsElements = travelItems.map((item, i: number) => (
-        <p key={i}>{item.itemName}</p>
-      ));
-      break;
-    case "failed":
-      travelItemsElements = <p>{error}</p>;
-      break;
-    default:
-      travelItemsElements = null;
+  if (isSuccess) {
+    const fetchedItems = [];
+    for (let item in newTravelItems) {
+      fetchedItems.push({
+        ...newTravelItems[item],
+        id: item,
+      });
+    }
+    itemsElements = fetchedItems.map((item) => (
+      <p key={item.id}>{item.itemName}</p>
+    ));
+    console.log("render data");
+  }
+  if (isLoading) {
+    itemsElements = <p>loading...</p>;
+    console.log("loading data");
+  }
+  if (isError) {
+    console.log(isError);
+    itemsElements = <p>oops! something went wrong</p>;
+    console.log("there is an error");
   }
 
   return (
@@ -107,13 +108,8 @@ const App = () => {
           }}>
           Log in
         </Button>
-        {loading ? (
-          <Box>LOADING</Box>
-        ) : authenticationReqError ? (
-          <p>Something went wrong!</p>
-        ) : null}
+        <Box>{itemsElements}</Box>
       </Box>
-      <Box>{travelItemsElements}</Box>
     </ThemeProvider>
   );
 };
