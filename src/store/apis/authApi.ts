@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_KEY } from "../../apikey";
+import { API_KEY } from "../../../apiKey/apiKey";
 import { RootState } from "../store";
 
 // Types
