@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_KEY } from "../../apikey";
 import { RootState } from "../store";
 
 // Types
@@ -34,7 +35,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<UserResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "accounts:signInWithPassword?key=AIzaSyAsm2AajbLjNnGdo4cb7pVXXfaxVkt-GKs",
+        url: `accounts:signInWithPassword?key=${API_KEY}`,
         method: "POST",
         body: credentials,
       }),
