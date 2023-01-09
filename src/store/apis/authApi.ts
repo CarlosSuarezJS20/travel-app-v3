@@ -3,8 +3,8 @@ import { RootState } from "../store";
 
 // Types
 export interface UserResponse {
-  user: string;
-  token: string;
+  localId: string;
+  idToken: string;
 }
 
 export interface LoginRequest {
@@ -13,10 +13,15 @@ export interface LoginRequest {
   returnSecureToken: boolean;
 }
 
-export const authApi: any = createApi({
+type error = {
+  data: { error: { code: number; message: string } };
+  status?: string;
+};
+
+export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://identitytoolkit.googleapis.com/v1/",
-    prepareHeaders: (headers, { getState }: any) => {
+    prepareHeaders: (headers, { getState }) => {
       // By default, if we have a token in the store, let's use that for authenticated requests
       const token = (getState() as RootState).autheticationReducer.userInfo
         .idToken;
@@ -33,6 +38,13 @@ export const authApi: any = createApi({
         method: "POST",
         body: credentials,
       }),
+      transformErrorResponse: (response: unknown) => {
+        const error = response as error;
+        if (error.status === "FETCH_ERROR") {
+          return error.status;
+        }
+        return error.data.error.message;
+      },
     }),
   }),
 });

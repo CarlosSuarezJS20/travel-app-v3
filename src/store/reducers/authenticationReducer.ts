@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface authenticationState {
   isAuthenticated: boolean;
+  authLoading: boolean;
   userInfo: {
     localId: string | null;
     idToken: string | null;
@@ -11,6 +12,7 @@ interface authenticationState {
 
 const initialAuthenticationState: authenticationState = {
   isAuthenticated: false,
+  authLoading: false,
   userInfo: {
     localId: null,
     idToken: null,
@@ -26,10 +28,7 @@ export const counterSlice = createSlice({
       state.isAuthenticated = true;
     },
     // created this to help deal with error from logIn call
-    autheticationReqError: (state, action) => {
-      console.log(action.payload.error);
-      state.authenticationReqError = action.payload.error;
-    },
+
     logOut: (state) => {
       state.isAuthenticated = false;
     },
@@ -45,7 +44,6 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { logIn, logOut, setUserCredentials, autheticationReqError } =
-  counterSlice.actions;
+export const { logIn, logOut, setUserCredentials } = counterSlice.actions;
 
 export default counterSlice.reducer;

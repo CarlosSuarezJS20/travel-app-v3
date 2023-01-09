@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "./store/storeHooks";
+import { useAppDispatch } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
 import { Input, Box, Button } from "@mui/material";
@@ -13,7 +13,6 @@ import type { LoginRequest } from "./store/apis/authApi";
 import {
   logIn,
   setUserCredentials,
-  autheticationReqError,
 } from "./store/reducers/authenticationReducer";
 
 // items
@@ -23,11 +22,10 @@ import theme from "./theme";
 
 const App = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [authenticationRejectReason, setAutheticationRejectReason] =
+    useState("");
   // authentication hook http req
-  const [login, { loading }] = useLoginMutation();
-  const authenticationState = useAppSelector(
-    (state) => state.autheticationReducer
-  );
+  const [login, data] = useLoginMutation();
   const dispatch = useAppDispatch();
 
   const {
@@ -51,11 +49,14 @@ const App = () => {
     };
 
     try {
-      const user = await login(requestBody).unwrap();
-      dispatch(setUserCredentials(user));
+      const { localId, idToken } = await login(requestBody).unwrap();
+      dispatch(setUserCredentials({ localId, idToken }));
       dispatch(logIn());
     } catch (err) {
-      dispatch(autheticationReqError(err));
+      if (err.status === "FETCH_ERROR") {
+        setAutheticationRejectReason(err);
+      }
+      setAutheticationRejectReason(err);
     }
   };
 
@@ -102,12 +103,16 @@ const App = () => {
           Log in
         </Button>
         <Box>
-          {loading ? (
-            <p>loading...</p>
-          ) : authenticationState.isAuthenticated ? (
+          {data.isLoading ? (
+            <p>Loading</p>
+          ) : data.isSuccess ? (
             <p>you are logged in</p>
-          ) : authenticationState.authenticationReqError ? (
-            <p>Opps! Something went wrong</p>
+          ) : data.isError ? (
+            <p>
+              {authenticationRejectReason === "FETCH_ERROR"
+                ? "Ops Something went wrong"
+                : authenticationRejectReason}
+            </p>
           ) : null}
         </Box>
         <Box>{itemsElements}</Box>
