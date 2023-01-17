@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch } from "./store/storeHooks";
+import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
 import { Input, Box, Button } from "@mui/material";
@@ -8,15 +8,18 @@ import { Input, Box, Button } from "@mui/material";
 import Header from "./ui/components/navigation/header";
 
 // authentication:
-import { useLoginMutation } from "./store/apis/authApi";
-import type { LoginRequest } from "./store/apis/authApi";
+import { useLoginMutation } from "./store/features/apis/authApi";
+import type { LoginRequest } from "./store/features/apis/authApi";
 import {
   logIn,
   setUserCredentials,
 } from "./store/reducers/authenticationReducer";
 
 // items
-import { useGetTravelItemsQuery } from "./store/apis/itemsApi";
+import {
+  useGetTravelItemsQuery,
+  selectAllTravelItems,
+} from "./store/features/travelItemsSlices/traveltems";
 
 import theme from "./theme";
 
@@ -28,12 +31,9 @@ const App = () => {
   const [login, data] = useLoginMutation();
   const dispatch = useAppDispatch();
 
-  const {
-    data: newTravelItems,
-    isError,
-    isLoading,
-    isSuccess,
-  } = useGetTravelItemsQuery(null);
+  const { isError, isLoading, isSuccess } = useGetTravelItemsQuery();
+
+  const travelItems = useAppSelector(selectAllTravelItems);
 
   const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials((prevCredentials) => ({
@@ -50,6 +50,7 @@ const App = () => {
 
     try {
       const { localId, idToken } = await login(requestBody).unwrap();
+      // unwrap() is enabling us to reject or succeed the request
       dispatch(setUserCredentials({ localId, idToken }));
       dispatch(logIn());
     } catch (err) {
@@ -63,7 +64,7 @@ const App = () => {
   let itemsElements;
 
   if (isSuccess) {
-    itemsElements = newTravelItems.map((item) => (
+    itemsElements = travelItems.map((item) => (
       <p key={item.id}>{item.itemName}</p>
     ));
   }
