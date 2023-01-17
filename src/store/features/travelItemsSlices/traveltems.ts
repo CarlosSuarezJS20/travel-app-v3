@@ -2,7 +2,6 @@ import {
   createSelector,
   createEntityAdapter,
   EntityState,
-  EntityAdapter,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { getItemsReqApi } from "../apis/itemsApi";
@@ -17,8 +16,15 @@ interface travelItem {
   price: number;
 }
 
+interface newTravelItem {
+  itemName: string;
+  userId: string;
+  token: string;
+}
+
 const travelItemsAdapter = createEntityAdapter<travelItem>({
   sortComparer: (a, b) => {
+    console.log(a, b);
     let x = a.country.toLowerCase();
     let y = b.country.toLowerCase();
     if (x < y) {
@@ -45,16 +51,27 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
             id: item,
           });
         }
-        console.log(fetchedItems);
         return travelItemsAdapter.setAll(initialState, fetchedItems);
       },
       providesTags: (res) =>
         res?.ids
           ? [
               ...res.ids.map((id) => ({ type: "travelItems" as const, id })),
-              { type: "travelItems", id: "travelList" },
+              { type: "travelItems", id: "TRAVEL_LIST" },
             ]
-          : [{ type: "travelItems", id: "listTravelItems" }],
+          : [{ type: "travelItems", id: "TRAVEL_LIST" }],
+    }),
+    addNewTravelItem: builder.mutation<newTravelItem, Partial<newTravelItem>>({
+      query: (travelItem) => {
+        const { token, itemName, userId } = travelItem;
+        const newTravelItem = { itemName: itemName, userId: userId };
+        return {
+          url: `/items.json?auth=${token}`,
+          method: "POST",
+          body: newTravelItem,
+        };
+      },
+      invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
     }),
   }),
 });
@@ -67,7 +84,8 @@ export const selectTravelItemsData = createSelector(
   (travelItemsResponse) => travelItemsResponse.data
 );
 
-export const { useGetTravelItemsQuery } = extendedItemsSlice;
+export const { useGetTravelItemsQuery, useAddNewTravelItemMutation } =
+  extendedItemsSlice;
 
 export const { selectAll: selectAllTravelItems } =
   travelItemsAdapter.getSelectors(

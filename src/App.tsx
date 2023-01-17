@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
@@ -19,6 +19,7 @@ import {
 import {
   useGetTravelItemsQuery,
   selectAllTravelItems,
+  useAddNewTravelItemMutation,
 } from "./store/features/travelItemsSlices/traveltems";
 
 import theme from "./theme";
@@ -27,13 +28,47 @@ const App = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [authenticationRejectReason, setAutheticationRejectReason] =
     useState("");
+  const [newTravelItem, setNewTravelItem] = useState({
+    itemName: "",
+    userId: "",
+    token: "",
+  });
   // authentication hook http req
   const [login, data] = useLoginMutation();
   const dispatch = useAppDispatch();
 
   const { isError, isLoading, isSuccess } = useGetTravelItemsQuery();
+  const [
+    addNewItem,
+    { isLoading: addItemLoading, isError: addItemReqError, error },
+  ] = useAddNewTravelItemMutation();
 
+  // const travelItems = useAppSelector(selectAllTravelItems);
   const travelItems = useAppSelector(selectAllTravelItems);
+  const userAuthenticationCredentialsToken = useAppSelector(
+    (state) => state.autheticationReducer.userInfo.idToken
+  );
+
+  // useEffect(() => {
+  //   // console.log(error);
+  // }, [error]);
+
+  // new item
+  const onChangeInputAddNewHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewTravelItem((prev) => ({
+      ...prev,
+      itemName: e.target.value,
+      userId: "1",
+      token: userAuthenticationCredentialsToken!,
+    }));
+  };
+
+  const handlesAddNewClick = () => {
+    if (!userAuthenticationCredentialsToken) {
+      return;
+    }
+    addNewItem(newTravelItem);
+  };
 
   const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setCredentials((prevCredentials) => ({
@@ -72,7 +107,6 @@ const App = () => {
     itemsElements = <p>loading...</p>;
   }
   if (isError) {
-    console.log(isError);
     itemsElements = <p>oops! something went wrong</p>;
   }
 
@@ -114,6 +148,30 @@ const App = () => {
                 ? "Ops Something went wrong"
                 : authenticationRejectReason}
             </p>
+          ) : null}
+        </Box>
+        <Box>
+          <Input
+            id='add new'
+            value={newTravelItem.itemName}
+            onChange={onChangeInputAddNewHandler}
+            name='add new'
+            type='text'
+            placeholder='add new'
+          />
+          <Button
+            variant='contained'
+            onClick={() => {
+              handlesAddNewClick();
+            }}>
+            add
+          </Button>
+        </Box>
+        <Box>
+          {addItemLoading ? (
+            <p>adding your item...</p>
+          ) : addItemReqError ? (
+            <p>couldn't add item this time</p>
           ) : null}
         </Box>
         <Box>{itemsElements}</Box>
