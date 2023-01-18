@@ -20,6 +20,7 @@ import {
   useGetTravelItemsQuery,
   selectAllTravelItems,
   useAddNewTravelItemMutation,
+  useEditTravelItemMutation,
 } from "./store/features/travelItemsSlices/traveltems";
 
 import theme from "./theme";
@@ -34,6 +35,10 @@ const App = () => {
   const { isError, isLoading, isSuccess } = useGetTravelItemsQuery();
   const [addNewItem, { isLoading: addItemLoading, isError: addItemReqError }] =
     useAddNewTravelItemMutation();
+  const [
+    editItemHandler,
+    { isLoading: editItemLoading, isError: editReqError },
+  ] = useEditTravelItemMutation();
 
   // const travelItems = useAppSelector(selectAllTravelItems);
   const travelItems = useAppSelector(selectAllTravelItems);
@@ -61,6 +66,24 @@ const App = () => {
     addNewItem(testItem);
   };
 
+  const handleseditClick = () => {
+    const { localId, idToken } = userAuthenticationCredentialsToken;
+    const testEditItem = {
+      id: "-NM4vMwJd5d6KHdu_Xni",
+      category: "Food & drinks",
+      itemName: "Guiness pint in Dublin Edit",
+      country: "IRELAND",
+      city: "DUBLIN",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/budget-world-reactjs.appspot.com/o/images%2Fguinees.jpeg?alt=media&token=82ad89b8-01e0-4d8d-851f-6ee438562002",
+      description: "edited post",
+      price: 7,
+      userId: localId!,
+      token: idToken!,
+    };
+    editItemHandler(testEditItem);
+  };
+
   const handlesOnClick = async () => {
     const requestBody: LoginRequest = {
       email: "travelup@testing.com",
@@ -84,7 +107,6 @@ const App = () => {
   let itemsElements;
 
   if (isSuccess) {
-    console.log(travelItems);
     itemsElements = travelItems.map((item) => (
       <Box key={item.id}>
         <p>{item.itemName}</p>
@@ -131,12 +153,26 @@ const App = () => {
             }}>
             add
           </Button>
+          <Button
+            variant='contained'
+            onClick={() => {
+              handleseditClick();
+            }}>
+            edit
+          </Button>
         </Box>
         <Box>
           {addItemLoading ? (
             <p>adding your item...</p>
           ) : addItemReqError ? (
             <p>couldn't add item this time</p>
+          ) : null}
+        </Box>
+        <Box>
+          {editItemLoading ? (
+            <p>adding your item...</p>
+          ) : editReqError ? (
+            <p>couldn't edit item this time</p>
           ) : null}
         </Box>
         <Box>{itemsElements}</Box>

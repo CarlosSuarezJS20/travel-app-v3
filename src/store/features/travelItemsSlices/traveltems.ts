@@ -15,7 +15,8 @@ interface travelItem {
   city: string;
   image: string;
   description: string;
-  price: string;
+  price: number;
+  token?: string;
 }
 
 interface newTravelItem {
@@ -70,34 +71,57 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
           : [{ type: "travelItems", id: "TRAVEL_LIST" }],
     }),
     addNewTravelItem: builder.mutation<newTravelItem, Partial<newTravelItem>>({
-      query: (travelItem) => {
-        // destructuring for builidng the final request body
-        const {
-          token,
-          itemName,
-          userId,
-          category,
-          country,
-          description,
-          city,
-          image,
-          price,
-        } = travelItem;
-
-        const newTravelItem = {
-          itemName: itemName,
-          category: category,
-          city: city,
-          country: country,
-          image: image,
-          description: description,
-          price: price,
-          userId: userId,
-        };
+      query: ({
+        category,
+        city,
+        country,
+        description,
+        image,
+        itemName,
+        price,
+        token,
+      }) => {
         return {
           url: `/items.json?auth=${token}`,
           method: "POST",
-          body: newTravelItem,
+          body: {
+            category,
+            city,
+            country,
+            description,
+            image,
+            itemName,
+            price,
+          },
+        };
+      },
+      invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
+    }),
+    editTravelItem: builder.mutation<travelItem, Partial<travelItem>>({
+      query: ({
+        id,
+        category,
+        city,
+        country,
+        description,
+        image,
+        itemName,
+        price,
+        token,
+      }) => {
+        // destructuring for builidng the final request body
+        return {
+          url: `items/${id}.json?auth=${token}`,
+          method: "PATCH",
+          body: {
+            category,
+            city,
+            country,
+            description,
+            image,
+            itemName,
+            price,
+          },
         };
       },
       invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
@@ -113,8 +137,11 @@ export const selectTravelItemsData = createSelector(
   (travelItemsResponse) => travelItemsResponse.data
 );
 
-export const { useGetTravelItemsQuery, useAddNewTravelItemMutation } =
-  extendedItemsSlice;
+export const {
+  useGetTravelItemsQuery,
+  useAddNewTravelItemMutation,
+  useEditTravelItemMutation,
+} = extendedItemsSlice;
 
 export const { selectAll: selectAllTravelItems } =
   travelItemsAdapter.getSelectors(
