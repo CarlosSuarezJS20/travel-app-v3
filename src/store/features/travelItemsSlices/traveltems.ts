@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   EntityState,
 } from "@reduxjs/toolkit";
+
 import { RootState } from "../../store";
 import { getItemsReqApi } from "../apis/itemsApi";
 
@@ -11,20 +12,27 @@ interface travelItem {
   category: string;
   itemName: string;
   country: string;
+  city: string;
   image: string;
   description: string;
-  price: number;
+  price: string;
 }
 
 interface newTravelItem {
+  category: string;
   itemName: string;
+  country: string;
+  city: string;
+  image: string;
+  description: string;
+  price: number;
   userId: string;
   token: string;
 }
 
+// orders items alphabetically
 const travelItemsAdapter = createEntityAdapter<travelItem>({
   sortComparer: (a, b) => {
-    console.log(a, b);
     let x = a.country.toLowerCase();
     let y = b.country.toLowerCase();
     if (x < y) {
@@ -63,8 +71,29 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
     }),
     addNewTravelItem: builder.mutation<newTravelItem, Partial<newTravelItem>>({
       query: (travelItem) => {
-        const { token, itemName, userId } = travelItem;
-        const newTravelItem = { itemName: itemName, userId: userId };
+        // destructuring for builidng the final request body
+        const {
+          token,
+          itemName,
+          userId,
+          category,
+          country,
+          description,
+          city,
+          image,
+          price,
+        } = travelItem;
+
+        const newTravelItem = {
+          itemName: itemName,
+          category: category,
+          city: city,
+          country: country,
+          image: image,
+          description: description,
+          price: price,
+          userId: userId,
+        };
         return {
           url: `/items.json?auth=${token}`,
           method: "POST",

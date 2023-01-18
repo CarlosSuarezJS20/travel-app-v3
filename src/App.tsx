@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Input, Box, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 // components for UI
 import Header from "./ui/components/navigation/header";
@@ -25,61 +25,46 @@ import {
 import theme from "./theme";
 
 const App = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [authenticationRejectReason, setAutheticationRejectReason] =
     useState("");
-  const [newTravelItem, setNewTravelItem] = useState({
-    itemName: "",
-    userId: "",
-    token: "",
-  });
   // authentication hook http req
   const [login, data] = useLoginMutation();
   const dispatch = useAppDispatch();
 
   const { isError, isLoading, isSuccess } = useGetTravelItemsQuery();
-  const [
-    addNewItem,
-    { isLoading: addItemLoading, isError: addItemReqError, error },
-  ] = useAddNewTravelItemMutation();
+  const [addNewItem, { isLoading: addItemLoading, isError: addItemReqError }] =
+    useAddNewTravelItemMutation();
 
   // const travelItems = useAppSelector(selectAllTravelItems);
   const travelItems = useAppSelector(selectAllTravelItems);
   const userAuthenticationCredentialsToken = useAppSelector(
-    (state) => state.autheticationReducer.userInfo.idToken
+    (state) => state.autheticationReducer.userInfo
   );
-
-  // useEffect(() => {
-  //   // console.log(error);
-  // }, [error]);
-
-  // new item
-  const onChangeInputAddNewHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setNewTravelItem((prev) => ({
-      ...prev,
-      itemName: e.target.value,
-      userId: "1",
-      token: userAuthenticationCredentialsToken!,
-    }));
-  };
 
   const handlesAddNewClick = () => {
     if (!userAuthenticationCredentialsToken) {
       return;
     }
-    addNewItem(newTravelItem);
-  };
-
-  const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [e.target.name]: e.target.value,
-    }));
+    const { localId, idToken } = userAuthenticationCredentialsToken;
+    const testItem = {
+      category: "Food & drinks",
+      itemName: "Guiness pint in Dublin NEW",
+      country: "IRELAND",
+      city: "DUBLIN",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/budget-world-reactjs.appspot.com/o/images%2Fguinees.jpeg?alt=media&token=82ad89b8-01e0-4d8d-851f-6ee438562002",
+      description: "New post",
+      price: 7,
+      userId: localId!,
+      token: idToken!,
+    };
+    addNewItem(testItem);
   };
 
   const handlesOnClick = async () => {
     const requestBody: LoginRequest = {
-      ...credentials,
+      email: "travelup@testing.com",
+      password: "travelup2023",
       returnSecureToken: true,
     };
 
@@ -99,8 +84,12 @@ const App = () => {
   let itemsElements;
 
   if (isSuccess) {
+    console.log(travelItems);
     itemsElements = travelItems.map((item) => (
-      <p key={item.id}>{item.itemName}</p>
+      <Box key={item.id}>
+        <p>{item.itemName}</p>
+        <p style={{ marginBottom: "5px" }}>{item.country}</p>
+      </Box>
     ));
   }
   if (isLoading) {
@@ -114,22 +103,6 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Header />
       <Box sx={{ margin: "100px", "& > :not(style)": { m: 2 } }}>
-        <Input
-          id='email'
-          type='email'
-          value={credentials.email}
-          onChange={onChangeInputHandler}
-          name='email'
-          placeholder='Enter your email'
-        />
-        <Input
-          id='password'
-          type='password'
-          value={credentials.password}
-          onChange={onChangeInputHandler}
-          name='password'
-          placeholder='Enter your password'
-        />
         <Button
           variant='contained'
           onClick={() => {
@@ -151,14 +124,6 @@ const App = () => {
           ) : null}
         </Box>
         <Box>
-          <Input
-            id='add new'
-            value={newTravelItem.itemName}
-            onChange={onChangeInputAddNewHandler}
-            name='add new'
-            type='text'
-            placeholder='add new'
-          />
           <Button
             variant='contained'
             onClick={() => {
