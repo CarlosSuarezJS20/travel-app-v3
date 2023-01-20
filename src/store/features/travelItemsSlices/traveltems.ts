@@ -1,10 +1,3 @@
-import {
-  createSelector,
-  createEntityAdapter,
-  EntityState,
-} from "@reduxjs/toolkit";
-
-import { RootState } from "../../store";
 import { getItemsReqApi } from "../apis/itemsApi";
 
 interface travelItem {
@@ -31,26 +24,14 @@ interface newTravelItem {
   token: string;
 }
 
-// orders items alphabetically
-const travelItemsAdapter = createEntityAdapter<travelItem>({
-  sortComparer: (a, b) => {
-    let x = a.country.toLowerCase();
-    let y = b.country.toLowerCase();
-    if (x < y) {
-      return -1;
-    }
-    if (x > y) {
-      return 1;
-    }
-    return 0;
-  },
-});
-
-const initialState = travelItemsAdapter.getInitialState();
+interface deleteReq {
+  token: string;
+  id: string;
+}
 
 export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTravelItems: builder.query<EntityState<travelItem>, void>({
+    getTravelItems: builder.query<travelItem[], void>({
       query: () => "items.json",
       transformResponse: (rawResults: travelItem[]) => {
         const fetchedItems: travelItem[] = [];
@@ -60,12 +41,12 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
             id: item,
           });
         }
-        return travelItemsAdapter.setAll(initialState, fetchedItems);
+        return fetchedItems;
       },
       providesTags: (res) =>
-        res?.ids
+        res
           ? [
-              ...res.ids.map((id) => ({ type: "travelItems" as const, id })),
+              ...res.map(({ id }) => ({ type: "travelItems" as const, id })),
               { type: "travelItems", id: "TRAVEL_LIST" },
             ]
           : [{ type: "travelItems", id: "TRAVEL_LIST" }],
@@ -126,24 +107,23 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
       },
       invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
     }),
+    deleteItem: builder.mutation<deleteReq, Partial<deleteReq>>({
+      query: ({ id, token }) => {
+        // destructuring for builidng the final request body
+        return {
+          url: `items/${id}.json?auth=${token}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
+    }),
   }),
 });
 
-export const selectTravelItemsResponse =
-  extendedItemsSlice.endpoints.getTravelItems.select();
-
-export const selectTravelItemsData = createSelector(
-  selectTravelItemsResponse,
-  (travelItemsResponse) => travelItemsResponse.data
-);
-
+// hooks
 export const {
+  useDeleteItemMutation,
   useGetTravelItemsQuery,
   useAddNewTravelItemMutation,
   useEditTravelItemMutation,
 } = extendedItemsSlice;
-
-export const { selectAll: selectAllTravelItems } =
-  travelItemsAdapter.getSelectors(
-    (state: RootState) => selectTravelItemsData(state) ?? initialState
-  );

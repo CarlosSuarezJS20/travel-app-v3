@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/storeHooks";
 
 import { ThemeProvider } from "@mui/material/styles";
@@ -18,9 +18,9 @@ import {
 // items
 import {
   useGetTravelItemsQuery,
-  selectAllTravelItems,
   useAddNewTravelItemMutation,
   useEditTravelItemMutation,
+  useDeleteItemMutation,
 } from "./store/features/travelItemsSlices/traveltems";
 
 import theme from "./theme";
@@ -31,8 +31,15 @@ const App = () => {
   // authentication hook http req
   const [login, data] = useLoginMutation();
   const dispatch = useAppDispatch();
+  const {
+    data: travelItems,
+    isError,
+    isLoading,
+    isSuccess,
+  } = useGetTravelItemsQuery();
 
-  const { isError, isLoading, isSuccess } = useGetTravelItemsQuery();
+  const [deleteItem, { isLoading: deleteReqLoading, isError: deleteReqError }] =
+    useDeleteItemMutation();
   const [addNewItem, { isLoading: addItemLoading, isError: addItemReqError }] =
     useAddNewTravelItemMutation();
   const [
@@ -40,20 +47,15 @@ const App = () => {
     { isLoading: editItemLoading, isError: editReqError },
   ] = useEditTravelItemMutation();
 
-  // const travelItems = useAppSelector(selectAllTravelItems);
-  const travelItems = useAppSelector(selectAllTravelItems);
-  const userAuthenticationCredentialsToken = useAppSelector(
+  const userAuthenticationCredentials = useAppSelector(
     (state) => state.autheticationReducer.userInfo
   );
 
   const handlesAddNewClick = () => {
-    if (!userAuthenticationCredentialsToken) {
-      return;
-    }
-    const { localId, idToken } = userAuthenticationCredentialsToken;
+    const { localId, idToken } = userAuthenticationCredentials;
     const testItem = {
       category: "Food & drinks",
-      itemName: "Guiness pint in Dublin NEW",
+      itemName: "Guiness pint in Dublin NEW II",
       country: "IRELAND",
       city: "DUBLIN",
       image:
@@ -66,12 +68,12 @@ const App = () => {
     addNewItem(testItem);
   };
 
-  const handleseditClick = () => {
-    const { localId, idToken } = userAuthenticationCredentialsToken;
+  const handlesEditClick = () => {
+    const { localId, idToken } = userAuthenticationCredentials;
     const testEditItem = {
-      id: "-NM4vMwJd5d6KHdu_Xni",
+      id: "-NMEnU4PiXgendNzFvYH",
       category: "Food & drinks",
-      itemName: "Guiness pint in Dublin Edit",
+      itemName: "Guiness pint in Dublin Edit III",
       country: "IRELAND",
       city: "DUBLIN",
       image:
@@ -82,6 +84,13 @@ const App = () => {
       token: idToken!,
     };
     editItemHandler(testEditItem);
+  };
+
+  const handlesDeleteClick = () => {
+    deleteItem({
+      id: "-NMEnU4PiXgendNzFvYH",
+      token: userAuthenticationCredentials.idToken!,
+    });
   };
 
   const handlesOnClick = async () => {
@@ -156,9 +165,16 @@ const App = () => {
           <Button
             variant='contained'
             onClick={() => {
-              handleseditClick();
+              handlesEditClick();
             }}>
             edit
+          </Button>
+          <Button
+            variant='contained'
+            onClick={() => {
+              handlesDeleteClick();
+            }}>
+            delete
           </Button>
         </Box>
         <Box>
@@ -170,8 +186,15 @@ const App = () => {
         </Box>
         <Box>
           {editItemLoading ? (
-            <p>adding your item...</p>
+            <p>editing your item...</p>
           ) : editReqError ? (
+            <p>couldn't edit item this time</p>
+          ) : null}
+        </Box>
+        <Box>
+          {deleteReqLoading ? (
+            <p>deleting your item...</p>
+          ) : deleteReqError ? (
             <p>couldn't edit item this time</p>
           ) : null}
         </Box>
