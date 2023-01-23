@@ -47,7 +47,21 @@ export const authApi = createApi({
         return error.data.error.message;
       },
     }),
+    signUp: builder.mutation<UserResponse, LoginRequest>({
+      query: (credentials) => ({
+        url: `accounts:signUp?key=${API_KEY}`,
+        method: "POST",
+        body: credentials,
+      }),
+      transformErrorResponse: (response: unknown) => {
+        const error = response as error;
+        if (error.status === "FETCH_ERROR") {
+          return error.status;
+        }
+        return error.data.error.message;
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useSignUpMutation } = authApi;

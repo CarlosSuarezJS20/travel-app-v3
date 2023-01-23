@@ -9,7 +9,7 @@ interface travelItem {
   image: string;
   description: string;
   price: number;
-  token?: string;
+  token: string;
 }
 
 interface newTravelItem {
@@ -52,57 +52,22 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
           : [{ type: "travelItems", id: "TRAVEL_LIST" }],
     }),
     addNewTravelItem: builder.mutation<newTravelItem, Partial<newTravelItem>>({
-      query: ({
-        category,
-        city,
-        country,
-        description,
-        image,
-        itemName,
-        price,
-        token,
-      }) => {
+      query: ({ token, ...body }) => {
         return {
           url: `/items.json?auth=${token}`,
           method: "POST",
-          body: {
-            category,
-            city,
-            country,
-            description,
-            image,
-            itemName,
-            price,
-          },
+          body: body,
         };
       },
       invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],
     }),
     editTravelItem: builder.mutation<travelItem, Partial<travelItem>>({
-      query: ({
-        id,
-        category,
-        city,
-        country,
-        description,
-        image,
-        itemName,
-        price,
-        token,
-      }) => {
+      query: ({ id, token, ...body }) => {
         // destructuring for builidng the final request body
         return {
           url: `items/${id}.json?auth=${token}`,
           method: "PATCH",
-          body: {
-            category,
-            city,
-            country,
-            description,
-            image,
-            itemName,
-            price,
-          },
+          body: body,
         };
       },
       invalidatesTags: [{ type: "travelItems", id: "TRAVEL_LIST" }],

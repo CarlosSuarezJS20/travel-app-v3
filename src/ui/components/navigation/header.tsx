@@ -1,4 +1,5 @@
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
 import {
   AppBar,
   Toolbar,
@@ -24,6 +25,11 @@ import NavigationTabs from "./navigationTabs";
 const useStyles = makeStyles(() => ({}));
 
 const Header: React.FC = () => {
+  // authentication state for styling:
+  const { isAuthenticated } = useAppSelector(
+    (state) => state.autheticationReducer
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -49,12 +55,20 @@ const Header: React.FC = () => {
                 <Grid item>
                   <NavigationTabs />
                 </Grid>
-                <Grid item>
-                  <SearchIcon fontSize='medium' sx={{ marginTop: "0.3em" }} />
-                </Grid>
-                <Grid item>
-                  <Avatar alt='profile picture' src={profileImage} />
-                </Grid>
+                {isAuthenticated ? (
+                  <>
+                    {" "}
+                    <Grid item>
+                      <SearchIcon
+                        fontSize='medium'
+                        sx={{ marginTop: "0.3em" }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Avatar alt='profile picture' src={profileImage} />
+                    </Grid>
+                  </>
+                ) : null}
               </Grid>
             </Grid>
           </Grid>

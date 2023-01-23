@@ -4,11 +4,7 @@ import "./index.css";
 import App from "./App";
 
 import { Provider } from "react-redux";
-// import { extendedItemsSlice } from "./store/features/travelItemsSlices/traveltems";
-
 import { rootStore } from "./store/store";
-
-// rootStore.dispatch(extendedItemsSlice.endpoints.getTravelItems.initiate());
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
