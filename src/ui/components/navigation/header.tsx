@@ -8,9 +8,6 @@ import {
   CssBaseline,
   Avatar,
   IconButton,
-  InputBase,
-  Box,
-  Button,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 
@@ -25,6 +22,7 @@ import theme from "../../../theme";
 
 // Tailored components
 import NavigationTabs from "./navigationTabs";
+import SearchCapability from "../searchCapability/searchBar";
 
 const useStyles = makeStyles(() => ({
   searchInput: {
@@ -34,9 +32,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Header: React.FC = () => {
+const Header = () => {
   // authentication state for styling:
+  const [checked, setChecked] = React.useState(false);
+  const collapseChangeHandler = () => {
+    setChecked((prevState) => !prevState);
+  };
   const classes = useStyles();
+
   const { isAuthenticated } = useAppSelector(
     (state) => state.autheticationReducer
   );
@@ -44,7 +47,10 @@ const Header: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
+      <AppBar
+        position='sticky'
+        elevation={0}
+        sx={{ position: "relative", borderBottom: "0.5px solid grey" }}>
         <Toolbar disableGutters sx={{ margin: "0 6.25em" }} key={"anchor"}>
           <Grid container justifyContent='space-between' alignItems='center'>
             <Grid item>
@@ -70,7 +76,7 @@ const Header: React.FC = () => {
                   // conditional rendering login options
                   <>
                     <Grid item>
-                      <IconButton>
+                      <IconButton onClick={collapseChangeHandler}>
                         <SearchIcon fontSize='medium' />
                       </IconButton>
                     </Grid>
@@ -85,40 +91,7 @@ const Header: React.FC = () => {
             </Grid>
           </Grid>
         </Toolbar>
-        <Toolbar sx={{ borderTop: "0.5px solid grey" }}>
-          <Grid container justifyContent='center' alignItems='center'>
-            <Grid item>
-              <Box>
-                <InputBase
-                  placeholder='Search by Country or City'
-                  sx={{
-                    width: "19em",
-                    border: "0.5px solid black",
-                    borderRadius: "10px 0 0 10px",
-                    padding: "0 1em",
-                  }}
-                />
-              </Box>
-            </Grid>
-            <Grid item>
-              <Button
-                disableFocusRipple
-                disableElevation
-                sx={{
-                  background: theme.palette.common.black,
-                  borderRadius: "0 10px 10px 0",
-                  padding: "5px",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    background: theme.palette.common.black,
-                  },
-                }}>
-                <SearchIcon fontSize='small' />
-                <Typography sx={{ fontWeight: "bold" }}>Search</Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </Toolbar>
+        <SearchCapability isChecked={checked} />
       </AppBar>
     </ThemeProvider>
   );
