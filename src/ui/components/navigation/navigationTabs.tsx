@@ -18,6 +18,14 @@ const useStyles = makeStyles(() => ({
       textTransform: "capitalize",
     },
   },
+  userLogInAndOutBtn: {
+    "&.MuiButton-root": {
+      ...theme.typography.genericBtn,
+      "&:hover": {
+        background: theme.palette.secondary.dark,
+      },
+    },
+  },
 }));
 
 const NavigationTabs: React.FC = () => {
@@ -29,15 +37,13 @@ const NavigationTabs: React.FC = () => {
 
   const classes = useStyles();
 
-  //   temporal log in handler
-  const handlesLogIn = () => {
+  const loggingHandler = () => {
+    if (authenticationState.isAuthenticated) {
+      dispatch(setUserCredentials({ localId: null, idToken: null }));
+      dispatch(logOut());
+      return;
+    }
     dispatch(logIn());
-    // request
-  };
-
-  const handleslogOut = () => {
-    dispatch(logOut());
-    dispatch(setUserCredentials({ localId: null, idToken: null }));
   };
 
   const handleTabChange = (e: React.SyntheticEvent, tabValue: string) => {
@@ -45,41 +51,37 @@ const NavigationTabs: React.FC = () => {
   };
 
   return (
-    <Grid container>
-      <Tabs
-        value={tabValue}
-        aria-label='secondary tabs example'
-        textColor='secondary'
-        indicatorColor='secondary'
-        onChange={handleTabChange}>
-        <Tab label='Home' value='home' className={classes.menuTab} />
+    <Grid container justifyContent='center' alignItems='center'>
+      <Grid item>
+        <Tabs
+          value={tabValue}
+          aria-label='secondary tabs example'
+          textColor='secondary'
+          indicatorColor='secondary'
+          onChange={handleTabChange}>
+          <Tab label='Home' value='home' className={classes.menuTab} />
 
-        <Tab label='About' value='about' className={classes.menuTab} />
-        {authenticationState.isAuthenticated && (
-          <Tab
-            label='Countries'
-            value='countries'
-            className={classes.menuTab}
-          />
-        )}
-      </Tabs>
-      {authenticationState.isAuthenticated ? (
+          <Tab label='About' value='about' className={classes.menuTab} />
+          {authenticationState.isAuthenticated && (
+            <Tab
+              label='Countries'
+              value='countries'
+              className={classes.menuTab}
+            />
+          )}
+        </Tabs>
+      </Grid>
+      <Grid item>
         <Button
+          className={classes.userLogInAndOutBtn}
+          disableRipple
           variant='contained'
           onClick={() => {
-            handleslogOut();
+            loggingHandler();
           }}>
-          Log out
+          {authenticationState.isAuthenticated ? "log out" : "log in"}
         </Button>
-      ) : (
-        <Button
-          variant='contained'
-          onClick={() => {
-            handlesLogIn();
-          }}>
-          Log in
-        </Button>
-      )}
+      </Grid>
     </Grid>
   );
 };

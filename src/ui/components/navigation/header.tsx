@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
+import { useAppSelector } from "../../../store/storeHooks";
 import {
   AppBar,
   Toolbar,
@@ -7,6 +7,10 @@ import {
   Typography,
   CssBaseline,
   Avatar,
+  IconButton,
+  InputBase,
+  Box,
+  Button,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 
@@ -22,10 +26,17 @@ import theme from "../../../theme";
 // Tailored components
 import NavigationTabs from "./navigationTabs";
 
-const useStyles = makeStyles(() => ({}));
+const useStyles = makeStyles(() => ({
+  searchInput: {
+    "&.MuiInputBase-input": {
+      border: "1px solid #ced4da",
+    },
+  },
+}));
 
 const Header: React.FC = () => {
   // authentication state for styling:
+  const classes = useStyles();
   const { isAuthenticated } = useAppSelector(
     (state) => state.autheticationReducer
   );
@@ -33,8 +44,8 @@ const Header: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar>
-        <Toolbar disableGutters sx={{ margin: "0 6.25em" }}>
+      <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
+        <Toolbar disableGutters sx={{ margin: "0 6.25em" }} key={"anchor"}>
           <Grid container justifyContent='space-between' alignItems='center'>
             <Grid item>
               <Grid container alignItems='center'>
@@ -49,27 +60,62 @@ const Header: React.FC = () => {
             <Grid item>
               <Grid
                 container
-                gap={3}
+                gap={1}
                 justifyContent='center'
                 alignItems='center'>
                 <Grid item>
                   <NavigationTabs />
                 </Grid>
-                {isAuthenticated ? (
+                {isAuthenticated && (
+                  // conditional rendering login options
                   <>
-                    {" "}
                     <Grid item>
-                      <SearchIcon
-                        fontSize='medium'
-                        sx={{ marginTop: "0.3em" }}
-                      />
+                      <IconButton>
+                        <SearchIcon fontSize='medium' />
+                      </IconButton>
                     </Grid>
                     <Grid item>
-                      <Avatar alt='profile picture' src={profileImage} />
+                      <IconButton size='small'>
+                        <Avatar alt='profile picture' src={profileImage} />
+                      </IconButton>
                     </Grid>
                   </>
-                ) : null}
+                )}
               </Grid>
+            </Grid>
+          </Grid>
+        </Toolbar>
+        <Toolbar sx={{ borderTop: "0.5px solid grey" }}>
+          <Grid container justifyContent='center' alignItems='center'>
+            <Grid item>
+              <Box>
+                <InputBase
+                  placeholder='Search by Country or City'
+                  sx={{
+                    width: "19em",
+                    border: "0.5px solid black",
+                    borderRadius: "10px 0 0 10px",
+                    padding: "0 1em",
+                  }}
+                />
+              </Box>
+            </Grid>
+            <Grid item>
+              <Button
+                disableFocusRipple
+                disableElevation
+                sx={{
+                  background: theme.palette.common.black,
+                  borderRadius: "0 10px 10px 0",
+                  padding: "5px",
+                  textTransform: "capitalize",
+                  "&:hover": {
+                    background: theme.palette.common.black,
+                  },
+                }}>
+                <SearchIcon fontSize='small' />
+                <Typography sx={{ fontWeight: "bold" }}>Search</Typography>
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>

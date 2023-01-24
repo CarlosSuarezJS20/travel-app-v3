@@ -5,6 +5,7 @@ import "@mui/material/styles/createPalette";
 
 enum themePalette {
   ARCPURPLE = "#a625b9",
+  ARCBLACK = "#000000",
   ARCGREY = "#868686",
   ARCWHITE = "#fffefa",
 }
@@ -17,6 +18,7 @@ enum typographyFonts {}
 declare module "@mui/material/styles" {
   interface TypographyVariants {
     logo: React.CSSProperties;
+    genericBtn: React.CSSProperties;
     // tab: React.CSSProperties;
   }
 
@@ -24,6 +26,7 @@ declare module "@mui/material/styles" {
   interface TypographyVariantsOptions {
     // tab?: React.CSSProperties;
     logo?: React.CSSProperties;
+    genericBtn?: React.CSSProperties;
   }
 }
 
@@ -32,12 +35,14 @@ declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
     // tab: true;
     logo: true;
+    genericBtn: true;
   }
 }
 
 declare module "@mui/material/styles/createPalette" {
   interface CommonColors {
     grey: string;
+    black: string;
   }
 }
 
@@ -51,6 +56,7 @@ const theme = createTheme({
     },
     common: {
       grey: themePalette.ARCGREY,
+      black: themePalette.ARCBLACK,
     },
   },
   typography: {
@@ -60,6 +66,13 @@ const theme = createTheme({
       padding: "0.2em 0.3em",
       border: "1px solid #868686",
       borderRadius: "25px",
+    },
+    genericBtn: {
+      textTransform: "capitalize",
+      height: "30px",
+      fontWeight: "bold",
+      background: themePalette.ARCPURPLE,
+      color: themePalette.ARCWHITE,
     },
   },
 });

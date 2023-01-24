@@ -27,8 +27,6 @@ export const counterSlice = createSlice({
     logIn: (state) => {
       state.isAuthenticated = true;
     },
-    // created this to help deal with error from logIn call
-
     logOut: (state) => {
       state.isAuthenticated = false;
     },
