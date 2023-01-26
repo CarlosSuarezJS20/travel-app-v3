@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Button, Grid } from "@mui/material";
+import { Tabs, Tab, Button, Grid, useMediaQuery } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
 import {
   logIn,
@@ -14,8 +14,9 @@ import theme from "../../../theme";
 const useStyles = makeStyles(() => ({
   menuTab: {
     "&.MuiTab-root": {
-      height: "4.5em",
+      fontSize: "1em",
       textTransform: "capitalize",
+      height: "62px",
     },
   },
   userLogInAndOutBtn: {
@@ -36,6 +37,7 @@ const NavigationTabs: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const classes = useStyles();
+  const matchesMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const loggingHandler = () => {
     if (authenticationState.isAuthenticated) {
@@ -51,25 +53,33 @@ const NavigationTabs: React.FC = () => {
   };
 
   return (
-    <Grid container justifyContent='center' alignItems='center'>
+    <Grid container gap={2} justifyContent='center' alignItems='center'>
       <Grid item>
-        <Tabs
-          value={tabValue}
-          aria-label='secondary tabs example'
-          textColor='secondary'
-          indicatorColor='secondary'
-          onChange={handleTabChange}>
-          <Tab label='Home' value='home' className={classes.menuTab} />
-
-          <Tab label='About' value='about' className={classes.menuTab} />
-          {authenticationState.isAuthenticated && (
-            <Tab
-              label='Countries'
-              value='countries'
-              className={classes.menuTab}
-            />
-          )}
-        </Tabs>
+        {matchesMediumScreen ? null : (
+          <Tabs
+            value={tabValue}
+            aria-label='secondary tabs example'
+            textColor='secondary'
+            indicatorColor='secondary'
+            onChange={handleTabChange}>
+            <Tab label='Home' value='home' className={classes.menuTab} />
+            <Tab label='About' value='about' className={classes.menuTab} />
+            {authenticationState.isAuthenticated && (
+              <Tab
+                label='my trips'
+                value='my trips'
+                className={classes.menuTab}
+              />
+            )}
+            {authenticationState.isAuthenticated && (
+              <Tab
+                label='My wishlist'
+                value='My wishlist'
+                className={classes.menuTab}
+              />
+            )}
+          </Tabs>
+        )}
       </Grid>
       <Grid item>
         <Button

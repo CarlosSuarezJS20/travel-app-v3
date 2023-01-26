@@ -9,6 +9,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Header />
+      <div>test</div>
     </ThemeProvider>
   );
 };

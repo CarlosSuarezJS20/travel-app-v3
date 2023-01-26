@@ -5,12 +5,10 @@ import {
   Toolbar,
   Grid,
   Typography,
-  CssBaseline,
   Avatar,
   IconButton,
+  useMediaQuery,
 } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
-
 import { makeStyles } from "@mui/styles";
 
 // icons
@@ -30,6 +28,13 @@ const useStyles = makeStyles(() => ({
       border: "1px solid #ced4da",
     },
   },
+  avatarIconButton: {
+    "&.MuiIconButton-root": {
+      "&:hover": {
+        background: "rgba(166, 37, 195, 0.10)",
+      },
+    },
+  },
 }));
 
 const Header = () => {
@@ -38,62 +43,67 @@ const Header = () => {
   const collapseChangeHandler = () => {
     setChecked((prevState) => !prevState);
   };
+  // styling hooks from MUI
   const classes = useStyles();
+  const matchesMdScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const { isAuthenticated } = useAppSelector(
     (state) => state.autheticationReducer
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar
-        position='sticky'
-        elevation={0}
-        sx={{ position: "relative", borderBottom: "0.5px solid grey" }}>
-        <Toolbar disableGutters sx={{ margin: "0 6.25em" }} key={"anchor"}>
-          <Grid container justifyContent='space-between' alignItems='center'>
-            <Grid item>
-              <Grid container alignItems='center'>
+    <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
+      <Toolbar
+        disableGutters
+        sx={{ margin: matchesMdScreen ? "0 1em" : "0 2em", minWidth: "380px" }}
+        key={"anchor"}>
+        <Grid container justifyContent='space-between' alignItems='center'>
+          <Grid item>
+            <Grid container alignItems='center'>
+              {matchesMdScreen ? (
                 <Grid item>
-                  <MenuIcon fontSize='large' sx={{ marginTop: "0.2em" }} />
+                  <IconButton>
+                    <MenuIcon fontSize='medium' sx={{ marginTop: "0.2em" }} />
+                  </IconButton>
                 </Grid>
-                <Grid item>
-                  <Typography variant='logo'>TravelUp</Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item>
-              <Grid
-                container
-                gap={1}
-                justifyContent='center'
-                alignItems='center'>
-                <Grid item>
-                  <NavigationTabs />
-                </Grid>
-                {isAuthenticated && (
-                  // conditional rendering login options
-                  <>
-                    <Grid item>
-                      <IconButton onClick={collapseChangeHandler}>
-                        <SearchIcon fontSize='medium' />
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <IconButton size='small'>
-                        <Avatar alt='profile picture' src={profileImage} />
-                      </IconButton>
-                    </Grid>
-                  </>
-                )}
+              ) : null}
+              <Grid item>
+                <Typography variant='logo'>TravelUp</Typography>
               </Grid>
             </Grid>
           </Grid>
-        </Toolbar>
-        <SearchCapability isChecked={checked} />
-      </AppBar>
-    </ThemeProvider>
+          <Grid item>
+            <Grid
+              container
+              gap={matchesMdScreen ? 0.2 : 1}
+              justifyContent='center'
+              alignItems='center'>
+              <Grid item>
+                <NavigationTabs />
+              </Grid>
+              {isAuthenticated && (
+                // conditional rendering login options
+                <>
+                  <Grid item>
+                    <IconButton onClick={collapseChangeHandler}>
+                      <SearchIcon fontSize='medium' />
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <IconButton
+                      className={classes.avatarIconButton}
+                      size='small'>
+                      <Avatar alt='profile picture' src={profileImage} />
+                    </IconButton>
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Toolbar>
+      <SearchCapability isChecked={checked} />
+    </AppBar>
   );
 };
 
