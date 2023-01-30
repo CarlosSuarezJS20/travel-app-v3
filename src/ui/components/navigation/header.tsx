@@ -55,7 +55,7 @@ const Header = () => {
     <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
       <Toolbar
         disableGutters
-        sx={{ margin: matchesMdScreen ? "0 1em" : "0 2em", minWidth: "380px" }}
+        sx={{ margin: matchesMdScreen ? "0 1em" : "0 2em", minWidth: "380px" }} //added this min width her for the tool bar
         key={"anchor"}>
         <Grid container justifyContent='space-between' alignItems='center'>
           <Grid item>

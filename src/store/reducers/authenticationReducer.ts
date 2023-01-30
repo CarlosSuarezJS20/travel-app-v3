@@ -20,7 +20,7 @@ const initialAuthenticationState: authenticationState = {
   authenticationReqError: null,
 };
 
-export const counterSlice = createSlice({
+export const authenticationSlice = createSlice({
   name: "authentication",
   initialState: initialAuthenticationState,
   reducers: {
@@ -42,6 +42,7 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { logIn, logOut, setUserCredentials } = counterSlice.actions;
+export const { logIn, logOut, setUserCredentials } =
+  authenticationSlice.actions;
 
-export default counterSlice.reducer;
+export default authenticationSlice.reducer;
