@@ -9,6 +9,7 @@ import {
   Box,
   Radio,
   FormControlLabel,
+  useMediaQuery,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -27,7 +28,7 @@ const useStyles = makeStyles(() => ({
       borderRadius: "10px 0 0 10px",
       padding: "0 1em",
       [theme.breakpoints.down("sm")]: {
-        width: "14em",
+        width: "10em",
       },
     },
   },
@@ -41,6 +42,7 @@ const SearchCapability: React.FC<PropsSearch> = ({ isChecked }) => {
   const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTypeOfSearch, setselectedTypeOfSearch] = useState("country");
+  const mediaQuerySm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const dispatch = useAppDispatch();
 
@@ -71,7 +73,13 @@ const SearchCapability: React.FC<PropsSearch> = ({ isChecked }) => {
   return (
     <Collapse in={isChecked}>
       <Toolbar sx={{ borderTop: "0.5px solid grey" }}>
-        <Grid container gap={2} justifyContent='center' alignItems='center'>
+        <Grid
+          sx={{ marginTop: mediaQuerySm ? "0.5em" : "0", minWidth: "380px" }}
+          container
+          direction={mediaQuerySm ? "column" : "row"}
+          gap={mediaQuerySm ? 0 : 2}
+          justifyContent='center'
+          alignItems='center'>
           <Grid item>
             <Grid container justifyContent='center' alignItems='center'>
               <Grid item>
