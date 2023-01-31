@@ -4,10 +4,17 @@ import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useGetTravelItemsQuery } from "../../../store/features/travelItemsSlice/traveltems";
 
+import { useAppSelector } from "../../../store/storeHooks";
+
 const useStyles = makeStyles(() => ({}));
 
 const ItemsBox: React.FC = () => {
-  const { data, isError, isLoading } = useGetTravelItemsQuery();
+  const searchFeatureItemsStateBody = useAppSelector(
+    (state) => state.searchFeatureReducer.searchBody
+  );
+  const { data, isError, isLoading } = useGetTravelItemsQuery(
+    searchFeatureItemsStateBody
+  );
 
   let travelItemsElements;
 

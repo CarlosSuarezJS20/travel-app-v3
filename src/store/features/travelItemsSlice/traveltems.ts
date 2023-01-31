@@ -29,10 +29,20 @@ interface deleteReq {
   id: string;
 }
 
+interface searchType {
+  typeOfSearch?: string;
+  searchTerm?: string;
+}
+
 export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTravelItems: builder.query<travelItem[], void>({
-      query: () => "items.json",
+    getTravelItems: builder.query<travelItem[], searchType>({
+      query: (searchBody) =>
+        searchBody.typeOfSearch === "country"
+          ? `items.json?orderBy="country"&equalTo="${searchBody.searchTerm!.toUpperCase()}"`
+          : searchBody.typeOfSearch === "city"
+          ? `items.json?orderBy="city"&equalTo="${searchBody.searchTerm!.toUpperCase()}"`
+          : "items.json",
       transformResponse: (rawResults: travelItem[]) => {
         const fetchedItems: travelItem[] = [];
         for (let item in rawResults) {

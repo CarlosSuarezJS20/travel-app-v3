@@ -6,12 +6,10 @@ type searchQueryBody = {
 };
 
 interface searchFeatureState {
-  isSearching: boolean;
   searchBody: searchQueryBody;
 }
 
 const initialsearchFeatureState: searchFeatureState = {
-  isSearching: false,
   searchBody: {
     searchTerm: "",
     typeOfSearch: "",
@@ -22,9 +20,6 @@ export const searchFeatureSlice = createSlice({
   name: "searchFeature",
   initialState: initialsearchFeatureState,
   reducers: {
-    setSearchingMode: (state) => {
-      state.isSearching = !state.isSearching;
-    },
     searchBody: (
       state,
       { payload: { searchTerm, typeOfSearch } }: PayloadAction<searchQueryBody>
@@ -35,6 +30,6 @@ export const searchFeatureSlice = createSlice({
   },
 });
 
-export const { setSearchingMode, searchBody } = searchFeatureSlice.actions;
+export const { searchBody } = searchFeatureSlice.actions;
 
 export default searchFeatureSlice.reducer;
