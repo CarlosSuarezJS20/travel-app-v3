@@ -11,6 +11,10 @@ import { makeStyles } from "@mui/styles";
 
 import theme from "../../../theme";
 
+// Routing
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const useStyles = makeStyles(() => ({
   menuTab: {
     "&.MuiTab-root": {
@@ -30,19 +34,22 @@ const useStyles = makeStyles(() => ({
 }));
 
 const NavigationTabs: React.FC = () => {
+  const classes = useStyles();
+  const dispatch = useAppDispatch();
+  const matchesMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const navigateTo = useNavigate();
   const [tabValue, setTabValue] = useState("home");
   const authenticationState = useAppSelector(
     (state) => state.autheticationReducer
   );
-  const dispatch = useAppDispatch();
-
-  const classes = useStyles();
-  const matchesMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const loggingHandler = () => {
     if (authenticationState.isAuthenticated) {
       dispatch(setUserCredentials({ localId: null, idToken: null }));
+      // deals with all updates required in nav tabs and routing ui changes
       dispatch(logOut());
+      navigateTo("/");
+      setTabValue("home");
       return;
     }
     dispatch(logIn());
@@ -62,8 +69,20 @@ const NavigationTabs: React.FC = () => {
             textColor='secondary'
             indicatorColor='secondary'
             onChange={handleTabChange}>
-            <Tab label='Home' value='home' className={classes.menuTab} />
-            <Tab label='About' value='about' className={classes.menuTab} />
+            <Tab
+              component={Link}
+              to='/about'
+              label='About'
+              value='about'
+              className={classes.menuTab}
+            />
+            <Tab
+              component={Link}
+              to='/'
+              label='Home'
+              value='home'
+              className={classes.menuTab}
+            />
             {authenticationState.isAuthenticated && (
               <Tab
                 label='my trips'
@@ -73,6 +92,17 @@ const NavigationTabs: React.FC = () => {
             )}
             {authenticationState.isAuthenticated && (
               <Tab
+                component={Link}
+                to='/search-travel'
+                label='search'
+                value='search'
+                className={classes.menuTab}
+              />
+            )}
+            {authenticationState.isAuthenticated && (
+              <Tab
+                component={Link}
+                to='/my-wishlist'
                 label='My wishlist'
                 value='My wishlist'
                 className={classes.menuTab}

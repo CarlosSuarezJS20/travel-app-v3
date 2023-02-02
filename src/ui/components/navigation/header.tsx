@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppSelector } from "../../../store/storeHooks";
 import {
   AppBar,
@@ -22,6 +22,10 @@ import theme from "../../../theme";
 import NavigationTabs from "./navigationTabs";
 import SearchCapability from "../searchCapability/searchBar";
 
+// Routing
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
+
 const useStyles = makeStyles(() => ({
   searchInput: {
     "&.MuiInputBase-input": {
@@ -37,10 +41,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Header = () => {
+interface PropsHeader {
+  isSearchBoxOpenHelper: () => void;
+}
+
+const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
   // authentication state for styling:
   const [checked, setChecked] = React.useState(false);
+  const currentLocation = useLocation();
+
+  useEffect(() => {
+    if (currentLocation.pathname !== "search-travel") {
+      setChecked(false);
+    }
+  }, [currentLocation, setChecked]);
+
   const collapseChangeHandler = () => {
+    isSearchBoxOpenHelper();
     setChecked((prevState) => !prevState);
   };
   // styling hooks from MUI
@@ -85,9 +102,19 @@ const Header = () => {
                 // conditional rendering login options
                 <>
                   <Grid item>
-                    <IconButton onClick={collapseChangeHandler}>
-                      <SearchIcon fontSize='medium' />
-                    </IconButton>
+                    {currentLocation.pathname !== "/search-travel" ||
+                    currentLocation.pathname !==
+                      "/search-travel" ? null : currentLocation.pathname ===
+                      "/search-travel" ? (
+                      <IconButton onClick={collapseChangeHandler}>
+                        <SearchIcon fontSize='medium' />
+                      </IconButton>
+                    ) : (
+                      <IconButton component={Link} to='/search-travel'>
+                        <SearchIcon fontSize='medium' />
+                      </IconButton>
+                    )}
+                    {/* conditions the button and if the user is not in the search component it will be a link instead   */}
                   </Grid>
                   <Grid item>
                     <IconButton

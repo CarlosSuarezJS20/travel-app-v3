@@ -19,6 +19,8 @@ import { searchBody } from "../../../store/reducers/searchFeatureReduce";
 
 import theme from "../../../theme";
 
+// improve UI and search logic for input value
+
 // classes
 const useStyles = makeStyles(() => ({
   searchInput: {
@@ -57,7 +59,9 @@ const SearchCapability: React.FC<PropsSearch> = ({ isChecked }) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadioSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setselectedTypeOfSearch(event.target.value);
   };
 
@@ -125,7 +129,7 @@ const SearchCapability: React.FC<PropsSearch> = ({ isChecked }) => {
                       color='secondary'
                       size='small'
                       checked={selectedTypeOfSearch === "country"}
-                      onChange={handleChange}
+                      onChange={handleRadioSearchChange}
                       value='country'
                       name='radio-buttons'
                       inputProps={{ "aria-label": "COUNTRY" }}
@@ -141,7 +145,7 @@ const SearchCapability: React.FC<PropsSearch> = ({ isChecked }) => {
                       color='secondary'
                       size='small'
                       checked={selectedTypeOfSearch === "city"}
-                      onChange={handleChange}
+                      onChange={handleRadioSearchChange}
                       value='city'
                       name='radio-buttons'
                       inputProps={{ "aria-label": "CITY" }}

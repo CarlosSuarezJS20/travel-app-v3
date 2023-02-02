@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Collapse } from "@mui/material";
 
 import { makeStyles } from "@mui/styles";
 import { useGetTravelItemsQuery } from "../../../store/features/travelItemsSlice/traveltems";
@@ -8,7 +8,11 @@ import { useAppSelector } from "../../../store/storeHooks";
 
 const useStyles = makeStyles(() => ({}));
 
-const ItemsBox: React.FC = () => {
+interface PropsItemsBox {
+  isSearchBoxOpen: boolean;
+}
+
+const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
   const searchFeatureItemsStateBody = useAppSelector(
     (state) => state.searchFeatureReducer.searchBody
   );
@@ -26,6 +30,9 @@ const ItemsBox: React.FC = () => {
 
   return (
     <Box marginTop={9}>
+      <Collapse in={isSearchBoxOpen}>
+        <Box sx={{ height: "70px" }} />
+      </Collapse>
       {isLoading ? (
         <Typography>is Loading....</Typography>
       ) : isError ? (
