@@ -45,12 +45,14 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
           : "items.json",
       transformResponse: (rawResults: travelItem[]) => {
         const fetchedItems: travelItem[] = [];
+
         for (let item in rawResults) {
           fetchedItems.push({
             ...rawResults[item],
             id: item,
           });
         }
+
         return fetchedItems;
       },
       providesTags: (res) =>

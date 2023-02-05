@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 // components for UI
 
@@ -7,18 +7,26 @@ import Layout from "./ui/components/layout";
 import theme from "./theme";
 
 import { Box } from "@mui/material";
-import { Routes, Route } from "react-router";
-import { NavLink } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router";
 
 // Router
 
 const App = () => {
   const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false);
+  const currentLocation = useLocation();
 
   // This here is a work around so the div that holds the travel items moves along with the search box that slides down
   const isSearchBoxOpenHandler = useCallback(() => {
     setIsSearchBoxOpen((prev) => !prev);
   }, [isSearchBoxOpen]);
+
+  // I'm using this useEffect to hide the search bar if user leaves the search-travel path
+  useEffect(() => {
+    if (currentLocation.pathname !== "/search-travel" && isSearchBoxOpen) {
+      console.log(isSearchBoxOpen);
+      setIsSearchBoxOpen(false);
+    }
+  }, [currentLocation.pathname, isSearchBoxOpen, setIsSearchBoxOpen]);
 
   return (
     <ThemeProvider theme={theme}>

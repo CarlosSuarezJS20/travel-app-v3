@@ -50,16 +50,19 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
   const [checked, setChecked] = React.useState(false);
   const currentLocation = useLocation();
 
-  useEffect(() => {
-    if (currentLocation.pathname !== "search-travel") {
-      setChecked(false);
-    }
-  }, [currentLocation, setChecked]);
-
   const collapseChangeHandler = () => {
     isSearchBoxOpenHelper();
     setChecked((prevState) => !prevState);
   };
+
+  // I'm using this useEffect to hide the search bar if user leaves the search-travel path
+  useEffect(() => {
+    if (currentLocation.pathname !== "/search-travel" && checked) {
+      console.log(checked);
+      setChecked(false);
+    }
+  }, [checked, currentLocation.pathname, setChecked]);
+
   // styling hooks from MUI
   const classes = useStyles();
   const matchesMdScreen = useMediaQuery(theme.breakpoints.down("md"));
