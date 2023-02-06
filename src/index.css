@@ -9,6 +9,10 @@ html {
   min-width: 380px;
 }
 
+a {
+  text-decoration: none;
+}
+
 img {
   width: 100%;
   display: block;

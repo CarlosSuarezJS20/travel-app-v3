@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../../store/storeHooks";
 import {
   AppBar,
@@ -8,6 +8,7 @@ import {
   Avatar,
   IconButton,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -25,6 +26,7 @@ import SearchCapability from "../searchCapability/searchBar";
 // Routing
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
+import ToolTipMenu from "../../tooltipNavigationMenu";
 
 const useStyles = makeStyles(() => ({
   searchInput: {
@@ -47,8 +49,11 @@ interface PropsHeader {
 
 const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
   // authentication state for styling:
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = useState(false);
   const currentLocation = useLocation();
+  // Tooltip state
+  const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorElement);
 
   const collapseChangeHandler = () => {
     isSearchBoxOpenHelper();
@@ -58,7 +63,6 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
   // I'm using this useEffect to hide the search bar if user leaves the search-travel path
   useEffect(() => {
     if (currentLocation.pathname !== "/search-travel" && checked) {
-      console.log(checked);
       setChecked(false);
     }
   }, [checked, currentLocation.pathname, setChecked]);
@@ -70,6 +74,11 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
   const { isAuthenticated } = useAppSelector(
     (state) => state.autheticationReducer
   );
+
+  // Handles toolTip Methods below:
+  const handleslickForToolTiphandler = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorElement(e.currentTarget);
+  };
 
   return (
     <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
@@ -120,11 +129,17 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
                     {/* conditions the button and if the user is not in the search component it will be a link instead   */}
                   </Grid>
                   <Grid item>
-                    <IconButton
-                      className={classes.avatarIconButton}
-                      size='small'>
-                      <Avatar alt='profile picture' src={profileImage} />
-                    </IconButton>
+                    <Tooltip title='Travel Profile'>
+                      <IconButton
+                        onClick={handleslickForToolTiphandler}
+                        className={classes.avatarIconButton}
+                        aria-controls={openMenu ? "travel Profile" : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={openMenu ? "true" : undefined}
+                        size='small'>
+                        <Avatar alt='profile picture' src={profileImage} />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
                 </>
               )}
@@ -133,6 +148,14 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
         </Grid>
       </Toolbar>
       <SearchCapability isChecked={checked} />
+      <ToolTipMenu
+        anchorId='travel Profile'
+        openMenu={openMenu}
+        anchorElement={anchorElement}
+        handleClose={() => {
+          setAnchorElement(null);
+        }}
+      />
     </AppBar>
   );
 };

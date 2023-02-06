@@ -7,6 +7,8 @@ interface PropsLayout {
 }
 
 const Layout: React.FC<PropsLayout> = ({ isSearchBoxOpenHandler }) => {
+  // handles TooltipMenus
+
   return (
     <Box>
       <Header isSearchBoxOpenHelper={isSearchBoxOpenHandler} />

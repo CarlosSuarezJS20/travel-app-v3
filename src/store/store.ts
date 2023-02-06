@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import authenticationReducer from "./reducers/authenticationReducer";
 import searchFeatureReducer from "./reducers/searchFeatureReduce";
+import navigationTabsReducer from "./reducers/navigationTabsReducer";
 
 import { authApi } from "./features/apis/authApi";
 import { getItemsReqApi } from "./features/apis/itemsApi";
@@ -13,6 +14,7 @@ export const rootStore = configureStore({
     [getItemsReqApi.reducerPath]: getItemsReqApi.reducer,
     autheticationReducer: authenticationReducer,
     searchFeatureReducer: searchFeatureReducer,
+    navTabsPositionReducer: navigationTabsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
