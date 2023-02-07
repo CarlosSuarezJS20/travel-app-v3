@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
 import { profileMenuToolTipItems } from "./aux/menuItemsforTooltipNavMenu";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/storeHooks";
+import { useLocation } from "react-router-dom";
 
 interface PropsToolTipMenu {
   anchorId: string;
@@ -19,23 +19,45 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
   anchorElement,
   handleClose,
 }) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<null | number>(null);
+  const currentLocation = useLocation();
+
+  useEffect(() => {
+    switch (currentLocation.pathname) {
+      case "/my-trips":
+        if (selectedIndex != 1) {
+          setSelectedIndex(1);
+        }
+        break;
+      case "/my-wishlist":
+        if (selectedIndex != 2) {
+          setSelectedIndex(2);
+        }
+        break;
+      default:
+        break;
+    }
+    return () => {
+      // cleans the index when user is redirected to profile page
+      if (
+        currentLocation.pathname === "/my-profile" ||
+        (currentLocation.pathname === "search-travel" && selectedIndex != null)
+      ) {
+        setSelectedIndex(null);
+        console.log(selectedIndex);
+      }
+    };
+  }, [currentLocation, selectedIndex, setSelectedIndex]);
+
   let menuItems;
 
   if (anchorId === "travel Profile") {
     menuItems = profileMenuToolTipItems;
   }
 
-  const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLElement>,
-    index: number
-  ) => {
+  const handleMenuItemClick = (index: number) => {
     setSelectedIndex(index);
   };
-
-  const navtabsPositionState = useAppSelector(
-    (state) => state.navTabsPositionReducer
-  );
 
   return (
     <Menu
@@ -85,7 +107,7 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
             component={Link}
             to={item.path}
             key={`${item}-${i}`}
-            onClick={(event) => handleMenuItemClick(event, i)}>
+            onClick={() => handleMenuItemClick(i)}>
             {item.itemName}
           </MenuItem>
         );

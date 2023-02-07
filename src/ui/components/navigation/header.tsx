@@ -4,7 +4,6 @@ import {
   AppBar,
   Toolbar,
   Grid,
-  Typography,
   Avatar,
   IconButton,
   useMediaQuery,
@@ -22,9 +21,10 @@ import theme from "../../../theme";
 // Tailored components
 import NavigationTabs from "./navigationTabs";
 import SearchCapability from "../searchCapability/searchBar";
+import Logo from "../logo";
 
 // Routing
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import ToolTipMenu from "../../tooltipNavigationMenu";
 
@@ -97,7 +97,7 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
                 </Grid>
               ) : null}
               <Grid item>
-                <Typography variant='logo'>TravelUp</Typography>
+                <Logo />
               </Grid>
             </Grid>
           </Grid>

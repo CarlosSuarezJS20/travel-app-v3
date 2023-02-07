@@ -48,15 +48,22 @@ const App = () => {
           />
           <Route
             path='my-trips'
-            element={<Box sx={{ margin: "5em 2em" }}>my wishList</Box>}
+            element={<Box sx={{ margin: "5em 2em" }}>my trips</Box>}
           />
           <Route
             path='search-travel'
             element={<MainTravelItems isSearchBoxOpen={isSearchBoxOpen} />}
           />
         </Route>
-        {/* <Route path='/add-new' element={<div>add new</div>} /> */}
+        <Route
+          path='my-profile'
+          element={<Box sx={{ margin: "1em 2em" }}>profile</Box>}
+        />
       </Routes>
+      {/* <Route
+        path='my-profile'
+        element={<Box sx={{ margin: "5em 2em" }}>profile</Box>}
+      /> */}
     </ThemeProvider>
   );
 };

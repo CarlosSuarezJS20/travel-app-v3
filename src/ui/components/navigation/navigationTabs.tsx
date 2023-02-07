@@ -51,7 +51,6 @@ const NavigationTabs: React.FC = () => {
   );
 
   useEffect(() => {
-    console.log(currentLocation);
     switch (currentLocation.pathname) {
       case "/":
         if (navtabsPositionState.positionValue != 0) {
@@ -68,12 +67,7 @@ const NavigationTabs: React.FC = () => {
           dispatch(setPositionValue(2));
         }
         break;
-      case "search-travel":
-        if (navtabsPositionState.positionValue != 3) {
-          dispatch(setPositionValue(3));
-        }
-        break;
-      case "my-wishlist":
+      case "/my-wishlist":
         if (navtabsPositionState.positionValue != 4) {
           dispatch(setPositionValue(4));
         }
@@ -100,7 +94,7 @@ const NavigationTabs: React.FC = () => {
   };
 
   return (
-    <Grid container gap={2} justifyContent='center' alignItems='center'>
+    <Grid container gap={2} alignItems='center'>
       <Grid item>
         {matchesMediumScreen ? null : (
           <Tabs
@@ -110,6 +104,11 @@ const NavigationTabs: React.FC = () => {
             indicatorColor='secondary'
             onChange={handleTabChange}>
             <Tab
+              sx={{
+                display: authenticationState.isAuthenticated
+                  ? "none"
+                  : "relative",
+              }}
               component={Link}
               to='/about'
               label='About'
@@ -129,15 +128,6 @@ const NavigationTabs: React.FC = () => {
                 to='/my-trips'
                 label='my trips'
                 value={2}
-                className={classes.menuTab}
-              />
-            )}
-            {authenticationState.isAuthenticated && (
-              <Tab
-                component={Link}
-                to='/search-travel'
-                label='search'
-                value={3}
                 className={classes.menuTab}
               />
             )}
