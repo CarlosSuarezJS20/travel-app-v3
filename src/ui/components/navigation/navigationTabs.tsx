@@ -68,9 +68,17 @@ const NavigationTabs: React.FC = () => {
         }
         break;
       case "/my-wishlist":
-        if (navtabsPositionState.positionValue != 4) {
-          dispatch(setPositionValue(4));
+        if (navtabsPositionState.positionValue != 3) {
+          dispatch(setPositionValue(3));
         }
+        break;
+      // sets the value so it doesn't highlight a tab
+      case "/search-travel":
+        dispatch(setPositionValue(false));
+
+        break;
+      case "/my-profile":
+        dispatch(setPositionValue(false));
         break;
       default:
         break;
@@ -136,7 +144,7 @@ const NavigationTabs: React.FC = () => {
                 component={Link}
                 to='/my-wishlist'
                 label='My wishlist'
-                value={4}
+                value={3}
                 className={classes.menuTab}
               />
             )}

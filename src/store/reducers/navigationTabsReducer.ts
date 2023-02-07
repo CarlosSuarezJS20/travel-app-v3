@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type initialState = {
-  positionValue: number;
+  positionValue: number | boolean;
 };
 
 const initialnavigationTabsState: initialState = {
@@ -14,7 +14,7 @@ export const searchFeatureSlice = createSlice({
   reducers: {
     setPositionValue: (
       state,
-      { payload: positionValue }: PayloadAction<number>
+      { payload: positionValue }: PayloadAction<number | boolean>
     ) => {
       state.positionValue = positionValue;
     },

@@ -3,6 +3,7 @@ import { Menu, MenuItem } from "@mui/material";
 import { profileMenuToolTipItems } from "./aux/menuItemsforTooltipNavMenu";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import theme from "../theme";
 
 interface PropsToolTipMenu {
   anchorId: string;
@@ -34,6 +35,11 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
           setSelectedIndex(2);
         }
         break;
+      case "/search-travel":
+        if (selectedIndex != 3) {
+          setSelectedIndex(3);
+        }
+        break;
       default:
         break;
     }
@@ -41,10 +47,9 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
       // cleans the index when user is redirected to profile page
       if (
         currentLocation.pathname === "/my-profile" ||
-        (currentLocation.pathname === "search-travel" && selectedIndex != null)
+        (currentLocation.pathname === "/search-travel" && selectedIndex != null)
       ) {
         setSelectedIndex(null);
-        console.log(selectedIndex);
       }
     };
   }, [currentLocation, selectedIndex, setSelectedIndex]);
@@ -99,9 +104,17 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
         return (
           <MenuItem
             selected={i === selectedIndex}
+            disabled={i === selectedIndex}
+            divider={i === 0}
             sx={{
               "&.Mui-selected": {
-                background: "red",
+                background: `rgba(134, 134, 134, 0.3)`,
+              },
+              "&.Mui-disabled": {
+                background: `rgba(134, 134, 134, 0.3)`,
+                color: theme.palette.common.black,
+                opacity: "1",
+                fontWeight: "bold",
               },
             }}
             component={Link}

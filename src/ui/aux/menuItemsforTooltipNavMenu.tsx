@@ -1,11 +1,11 @@
 export const profileMenuToolTipItems = [
   {
-    itemName: "My profile",
+    itemName: "My Profile",
     path: "/my-profile",
   },
-  { itemName: "My trips", path: "/my-trips" },
+  { itemName: "My Trips", path: "/my-trips" },
   {
-    itemName: "My wishList",
+    itemName: "My WishList",
     path: "/my-wishlist",
   },
   {
