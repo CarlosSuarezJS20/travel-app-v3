@@ -59,11 +59,11 @@ const App = () => {
           path='my-profile'
           element={<Box sx={{ margin: "1em 2em" }}>profile</Box>}
         />
+        <Route
+          path='maps'
+          element={<Box sx={{ margin: "1em 2em" }}>maps coming soon...</Box>}
+        />
       </Routes>
-      {/* <Route
-        path='my-profile'
-        element={<Box sx={{ margin: "5em 2em" }}>profile</Box>}
-      /> */}
     </ThemeProvider>
   );
 };

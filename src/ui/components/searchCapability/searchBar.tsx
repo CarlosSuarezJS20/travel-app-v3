@@ -25,7 +25,7 @@ import theme from "../../../theme";
 const useStyles = makeStyles(() => ({
   searchInput: {
     "&.MuiInputBase-root": {
-      width: "19em",
+      width: "16em",
       border: "0.5px solid black",
       borderRadius: "10px 0 0 10px",
       padding: "0 1em",

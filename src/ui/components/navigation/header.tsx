@@ -24,9 +24,10 @@ import SearchCapability from "../searchCapability/searchBar";
 import Logo from "../logo";
 
 // Routing
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import ToolTipMenu from "../../tooltipNavigationMenu";
+// components
+import ToolTipMenu from "./tooltipNavigationMenu";
 
 const useStyles = makeStyles(() => ({
   searchInput: {
@@ -45,9 +46,13 @@ const useStyles = makeStyles(() => ({
 
 interface PropsHeader {
   isSearchBoxOpenHelper: () => void;
+  toogleMenuDrawerHandler: (isOpen: boolean) => void;
 }
 
-const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
+const Header: React.FC<PropsHeader> = ({
+  isSearchBoxOpenHelper,
+  toogleMenuDrawerHandler,
+}) => {
   // authentication state for styling:
   const [checked, setChecked] = useState(false);
   const currentLocation = useLocation();
@@ -84,14 +89,17 @@ const Header: React.FC<PropsHeader> = ({ isSearchBoxOpenHelper }) => {
     <AppBar elevation={0} sx={{ borderBottom: "0.5px solid grey" }}>
       <Toolbar
         disableGutters
-        sx={{ margin: matchesMdScreen ? "0 1em" : "0 2em", minWidth: "380px" }} //added this min width her for the tool bar
+        sx={{ margin: matchesMdScreen ? "0 1em" : "0 2em", minWidth: "370px" }} //added this min width her for the tool bar
         key={"anchor"}>
         <Grid container justifyContent='space-between' alignItems='center'>
           <Grid item>
             <Grid container alignItems='center'>
               {matchesMdScreen ? (
                 <Grid item>
-                  <IconButton>
+                  <IconButton
+                    onClick={() => {
+                      toogleMenuDrawerHandler(true);
+                    }}>
                     <MenuIcon fontSize='medium' sx={{ marginTop: "0.2em" }} />
                   </IconButton>
                 </Grid>
