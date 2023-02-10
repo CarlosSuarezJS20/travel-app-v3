@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
 import { Box } from "@mui/material";
 import Header from "./navigation/header";
 import { Outlet } from "react-router-dom";
-import MainDrawerMenu from "./navigation/mainDrawer";
+
+const MainDrawerMenu = React.lazy(() => import("./navigation/mainDrawer"));
 
 interface PropsLayout {
   isSearchBoxOpenHandler: () => void;
@@ -26,10 +27,12 @@ const Layout: React.FC<PropsLayout> = ({ isSearchBoxOpenHandler }) => {
         isSearchBoxOpenHelper={isSearchBoxOpenHandler}
         toogleMenuDrawerHandler={toggleDrawerHandler}
       />
-      <MainDrawerMenu
-        isOpen={isDrawerOpen}
-        toggleHandler={toggleDrawerHandler}
-      />
+      <Suspense fallback={<Box>loading...</Box>}>
+        <MainDrawerMenu
+          isOpen={isDrawerOpen}
+          toggleHandler={toggleDrawerHandler}
+        />
+      </Suspense>
       <Outlet />
     </Box>
   );

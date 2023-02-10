@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, Suspense } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 // components for UI
-
-import MainTravelItems from "./ui/components/travelItems/mainTravelItems";
 import Layout from "./ui/components/layout";
 import theme from "./theme";
 
 import { Box } from "@mui/material";
 import { Routes, Route, useLocation } from "react-router";
+
+// Lazy Loading
+const MainTravelItems = React.lazy(
+  () => import("./ui/components/travelItems/mainTravelItems")
+);
 
 // Router
 
@@ -52,7 +55,11 @@ const App = () => {
           />
           <Route
             path='search-travel'
-            element={<MainTravelItems isSearchBoxOpen={isSearchBoxOpen} />}
+            element={
+              <Suspense fallback={<Box>Loading...</Box>}>
+                <MainTravelItems isSearchBoxOpen={isSearchBoxOpen} />
+              </Suspense>
+            }
           />
         </Route>
         <Route

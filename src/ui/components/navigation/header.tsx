@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useAppSelector } from "../../../store/storeHooks";
 import {
   AppBar,
@@ -8,6 +8,7 @@ import {
   IconButton,
   useMediaQuery,
   Tooltip,
+  Box,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -27,7 +28,7 @@ import Logo from "../logo";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 // components
-import ToolTipMenu from "./tooltipNavigationMenu";
+const ToolTipMenu = React.lazy(() => import("./tooltipNavigationMenu"));
 
 const useStyles = makeStyles(() => ({
   searchInput: {
@@ -137,17 +138,21 @@ const Header: React.FC<PropsHeader> = ({
                     {/* conditions the button and if the user is not in the search component it will be a link instead   */}
                   </Grid>
                   <Grid item>
-                    <Tooltip title='Travel Profile'>
-                      <IconButton
-                        onClick={handleslickForToolTiphandler}
-                        className={classes.avatarIconButton}
-                        aria-controls={openMenu ? "travel Profile" : undefined}
-                        aria-haspopup='true'
-                        aria-expanded={openMenu ? "true" : undefined}
-                        size='small'>
-                        <Avatar alt='profile picture' src={profileImage} />
-                      </IconButton>
-                    </Tooltip>
+                    <Suspense fallback={<Box>loading...</Box>}>
+                      <Tooltip title='Travel Profile'>
+                        <IconButton
+                          onClick={handleslickForToolTiphandler}
+                          className={classes.avatarIconButton}
+                          aria-controls={
+                            openMenu ? "travel Profile" : undefined
+                          }
+                          aria-haspopup='true'
+                          aria-expanded={openMenu ? "true" : undefined}
+                          size='small'>
+                          <Avatar alt='profile picture' src={profileImage} />
+                        </IconButton>
+                      </Tooltip>
+                    </Suspense>
                   </Grid>
                 </>
               )}
@@ -156,14 +161,16 @@ const Header: React.FC<PropsHeader> = ({
         </Grid>
       </Toolbar>
       <SearchCapability isChecked={checked} />
-      <ToolTipMenu
-        anchorId='travel Profile'
-        openMenu={openMenu}
-        anchorElement={anchorElement}
-        handleClose={() => {
-          setAnchorElement(null);
-        }}
-      />
+      <Suspense>
+        <ToolTipMenu
+          anchorId='travel Profile'
+          openMenu={openMenu}
+          anchorElement={anchorElement}
+          handleClose={() => {
+            setAnchorElement(null);
+          }}
+        />
+      </Suspense>
     </AppBar>
   );
 };

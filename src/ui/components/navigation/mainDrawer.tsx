@@ -93,6 +93,7 @@ const MainDrawerMenu: React.FC<PropsMainDrawer> = ({
       <List
         sx={{
           width: "250px",
+          textAlign: "center",
           padding: `${!isAuthenticated ? "4em" : "0"} 0 0 0`,
         }}>
         {drawerMenuItems.slice(-2).map((item, index) => (
