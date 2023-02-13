@@ -2,7 +2,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import ExploreIcon from "@mui/icons-material/Explore";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -17,7 +17,7 @@ export const profileMenuToolTipItems = [
     path: "/my-wishlist",
   },
   {
-    itemName: "Travel search",
+    itemName: "Explore",
     path: "/search-travel",
   },
 ];
@@ -35,9 +35,9 @@ export const drawerMenuItems = [
     icon: AddTaskIcon,
   },
   {
-    itemName: "Travel search",
+    itemName: "Explore",
     path: "/search-travel",
-    icon: TravelExploreIcon,
+    icon: ExploreIcon,
   },
   {
     itemName: "Maps",
