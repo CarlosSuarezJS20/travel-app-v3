@@ -28,7 +28,7 @@ const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
 
   if (data) {
     travelItemsElements = data.map((item) => (
-      <Grid sm={4} md={2} item key={item.id}>
+      <Grid sm={4} md={2.4} item key={item.id}>
         <SingleTravelItem
           category={item.category}
           itemName={item.itemName}
@@ -45,7 +45,7 @@ const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
   return (
     <Box marginTop={8}>
       <Collapse in={isSearchBoxOpen}>
-        <Box sx={{ height: "65px" }} />
+        <Box sx={{ height: "70px" }} />
       </Collapse>
       {isLoading ? (
         <Typography>is Loading....</Typography>
@@ -53,6 +53,7 @@ const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
         <Typography>there is an error!</Typography>
       ) : (
         <Grid
+          paddingTop={theme.spacing(1)}
           spacing={{ sm: 1 }}
           container
           columns={{ sm: 8, md: 12 }}

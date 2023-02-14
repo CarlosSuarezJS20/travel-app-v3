@@ -41,7 +41,7 @@ declare module "@mui/material/Typography" {
 
 declare module "@mui/material/styles/createPalette" {
   interface CommonColors {
-    grey: string;
+    purple: string;
     black: string;
   }
 }
@@ -52,10 +52,10 @@ const theme = createTheme({
       main: themePalette.ARCWHITE,
     },
     secondary: {
-      main: themePalette.ARCPURPLE,
+      main: themePalette.ARCGREY,
     },
     common: {
-      grey: themePalette.ARCGREY,
+      purple: themePalette.ARCPURPLE,
       black: themePalette.ARCBLACK,
     },
   },
