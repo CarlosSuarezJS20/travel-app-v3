@@ -1,6 +1,7 @@
 import React from "react";
-import { Paper, Typography, Grid, Box, IconButton } from "@mui/material";
+import { Paper, Typography, Grid, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ItemRating from "../rating/rating";
 
 import { makeStyles } from "@mui/styles";
 import theme from "../../../theme";
@@ -8,6 +9,7 @@ import theme from "../../../theme";
 const useStyles = makeStyles(() => ({}));
 
 interface PropsTravelItem {
+  id: string;
   category: string;
   itemName: string;
   country: string;
@@ -18,6 +20,7 @@ interface PropsTravelItem {
 }
 
 const SingleTravelItem: React.FC<PropsTravelItem> = ({
+  id,
   category,
   itemName,
   country,
@@ -34,13 +37,14 @@ const SingleTravelItem: React.FC<PropsTravelItem> = ({
         borderRadius: "5px",
       }}>
       <Grid container direction='column'>
-        <Grid container justifyContent='flex-end'>
+        <Grid container justifyContent='space-between'>
           <Grid item>
-            <Box>
-              <IconButton color='secondary'>
-                <MoreVertIcon fontSize='medium' />
-              </IconButton>
-            </Box>
+            <ItemRating itemId={id} />
+          </Grid>
+          <Grid item>
+            <IconButton color='secondary'>
+              <MoreVertIcon fontSize='medium' />
+            </IconButton>
           </Grid>
         </Grid>
       </Grid>
@@ -49,7 +53,6 @@ const SingleTravelItem: React.FC<PropsTravelItem> = ({
         src={image}
         style={{ height: "350px", width: "100%", objectFit: "cover" }}
       />
-
       <Typography>{category}</Typography>
       <Typography>{itemName.slice(0, 20)}...</Typography>
       <Typography>{country}</Typography>

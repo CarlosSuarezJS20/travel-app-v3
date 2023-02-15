@@ -30,6 +30,7 @@ const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
     travelItemsElements = data.map((item) => (
       <Grid sm={4} md={2.4} item key={item.id}>
         <SingleTravelItem
+          id={item.id}
           category={item.category}
           itemName={item.itemName}
           country={item.country}
