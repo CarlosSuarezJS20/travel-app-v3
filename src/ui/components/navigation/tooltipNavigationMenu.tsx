@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import theme from "../../../theme";
 
 interface PropsToolTipMenu {
-  anchorId: string;
   openMenu: boolean;
   anchorElement: HTMLElement | null;
   handleClose: () => void;
@@ -15,7 +14,6 @@ interface PropsToolTipMenu {
 //anchor menu
 
 const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
-  anchorId,
   openMenu,
   anchorElement,
   handleClose,
@@ -54,12 +52,6 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
     };
   }, [currentLocation, selectedIndex, setSelectedIndex]);
 
-  let menuItems;
-
-  if (anchorId === "travel Profile") {
-    menuItems = profileMenuToolTipItems;
-  }
-
   const handleMenuItemClick = (index: number) => {
     setSelectedIndex(index);
   };
@@ -67,7 +59,7 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
   return (
     <Menu
       anchorEl={anchorElement}
-      id={anchorId}
+      id='travel Profile'
       open={openMenu}
       onClose={handleClose}
       onClick={handleClose}
@@ -100,7 +92,7 @@ const ToolTipMenu: React.FC<PropsToolTipMenu> = ({
           },
         },
       }}>
-      {menuItems?.map((item, i) => {
+      {profileMenuToolTipItems.map((item, i) => {
         return (
           <MenuItem
             selected={i === selectedIndex}

@@ -82,7 +82,7 @@ const Header: React.FC<PropsHeader> = ({
   );
 
   // Handles toolTip Methods below:
-  const handleslickForToolTiphandler = (e: React.MouseEvent<HTMLElement>) => {
+  const handlesclickForToolTiphandler = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorElement(e.currentTarget);
   };
 
@@ -141,7 +141,7 @@ const Header: React.FC<PropsHeader> = ({
                     <Suspense fallback={<Box>loading...</Box>}>
                       <Tooltip title='Travel Profile'>
                         <IconButton
-                          onClick={handleslickForToolTiphandler}
+                          onClick={handlesclickForToolTiphandler}
                           className={classes.avatarIconButton}
                           aria-controls={
                             openMenu ? "travel Profile" : undefined
@@ -163,7 +163,6 @@ const Header: React.FC<PropsHeader> = ({
       <SearchCapability isChecked={checked} />
       <Suspense>
         <ToolTipMenu
-          anchorId='travel Profile'
           openMenu={openMenu}
           anchorElement={anchorElement}
           handleClose={() => {
