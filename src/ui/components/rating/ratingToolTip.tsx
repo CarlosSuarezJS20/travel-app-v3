@@ -6,8 +6,7 @@ interface PropsToolTipMenu {
   anchorElement: HTMLElement | null;
   handleClose: () => void;
 }
-//id
-//anchor menu
+//add menu sign and style
 
 const RatingToolTip: React.FC<PropsToolTipMenu> = ({
   openMenu,
