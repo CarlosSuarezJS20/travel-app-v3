@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Rating, Grid, Box, Typography } from "@mui/material";
 import RatingToolTip from "./ratingToolTip";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { makeStyles } from "@mui/styles";
 
@@ -22,7 +23,7 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
 
   return (
     <Box id='toolTip_rating' onMouseOver={anchorElementHandler}>
-      <Grid container>
+      <Grid container justifyContent='flex-start' alignItems='flex-end'>
         <Grid item>
           <Rating
             sx={{ paddingTop: "8px" }}
@@ -32,12 +33,16 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
           />
         </Grid>
         <Grid item>
-          <Typography sx={{ paddingTop: "8px" }} component='legend'>
+          <ExpandMoreIcon />
+        </Grid>
+        <Grid item>
+          <Typography sx={{ fontSize: "0.7em" }} component='legend'>
             by 10 travellers
           </Typography>
         </Grid>
       </Grid>
       <RatingToolTip
+        itemId={itemId}
         handleClose={toolTipRatingCloseHandler}
         anchorElement={anchorElement}
         openMenu={openToolTip}

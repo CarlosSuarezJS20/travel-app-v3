@@ -41,7 +41,7 @@ export const extendedItemsSlice = getItemsReqApi.injectEndpoints({
         searchBody.typeOfSearch === "country"
           ? `items.json?orderBy="country"&equalTo="${searchBody.searchTerm!.toUpperCase()}"`
           : searchBody.typeOfSearch === "city"
-          ? `items.json?orderBy="city"&equalTo="${searchBody.searchTerm!.toUpperCase()}"`
+          ? `items.json?orderBy="city"  &equalTo="${searchBody.searchTerm!.toUpperCase()}"`
           : "items.json",
       transformResponse: (rawResults: travelItem[]) => {
         const fetchedItems: travelItem[] = [];
