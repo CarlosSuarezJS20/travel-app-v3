@@ -1,128 +1,32 @@
-import React, { useState } from "react";
-import { Menu, Grid, Box, Rating, Typography } from "@mui/material";
+import React from "react";
+import { Rating, Grid, Box, Typography, IconButton } from "@mui/material";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-interface PropsToolTipMenu {
-  itemId: string;
-  openMenu: boolean;
-  anchorElement: HTMLElement | null;
-  handleClose: () => void;
-}
-//add menu sign and style
+import { makeStyles } from "@mui/styles";
 
-const RatingToolTip: React.FC<PropsToolTipMenu> = ({
+const useStyles = makeStyles(() => ({}));
+
+const RatingToolTip: React.FC<{ itemId: string; closeToolTip: () => void }> = ({
   itemId,
-  openMenu,
-  anchorElement,
-  handleClose,
+  closeToolTip,
 }) => {
-  const [value, setValue] = useState<number | null>(null);
-  const [userHasRated, setUserHasRated] = useState<boolean>(false);
-  const [rateAgain, setRateAgain] = useState<boolean>(false);
-
-  const onChangeRatingValueHandler = (value: number | null) => {
-    if (rateAgain) {
-      setRateAgain(false);
-    }
-    setValue(value);
-  };
-
   return (
-    <Menu
-      anchorEl={anchorElement}
-      id='toolTip_rating'
-      open={openMenu}
-      onClose={handleClose}
-      transformOrigin={{ horizontal: "right", vertical: "top" }}
-      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      PaperProps={{
-        sx: {
-          overflow: "visible",
-          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-          mt: 1.5,
-          "&:before": {
-            content: '""',
-            display: "block",
-            position: "absolute",
-            top: 0,
-            right: 14,
-            width: 10,
-            height: 10,
-            bgcolor: "background.paper",
-            transform: "translateY(-50%) rotate(45deg)",
-            zIndex: 0,
-          },
-        },
-      }}>
-      <Grid direction='column' gap={1} container padding='0 1em'>
+    <Box>
+      <Grid direction='column' container>
         <Grid item>
-          <Grid container gap={1} alignContent='center' alignItems='center'>
-            {userHasRated ? (
-              <>
-                <Grid item>
-                  <Typography component='legend'>Your Rating: </Typography>
-                </Grid>
-                <Grid item>
-                  <Rating
-                    name='rating-controlled'
-                    sx={{ paddingTop: "5px" }}
-                    value={value}
-                    size='small'
-                    readOnly
-                  />
-                </Grid>
-              </>
-            ) : (
-              <>
-                <Grid item>
-                  <Typography component='legend'>Add Rating: </Typography>
-                </Grid>
-                <Grid item>
-                  <Rating
-                    name='rating-controlled'
-                    sx={{ paddingTop: "5px" }}
-                    value={value}
-                    size='small'
-                    onChange={(event, newValue) => {
-                      onChangeRatingValueHandler(newValue);
-                    }}
-                  />
-                </Grid>
-              </>
-            )}
-          </Grid>
-        </Grid>
-        {userHasRated && (
-          <>
-            <Grid item alignSelf='center'>
-              <Typography
-                onClick={() => {
-                  setRateAgain(true);
-                }}>
-                Rate again?
+          <Grid container justifyContent='center' alignItems='center'>
+            <Grid item>
+              <Typography fontSize='1.2em' fontWeight='bold'>
+                Your Rating:
               </Typography>
             </Grid>
-            <Grid item sx={{ display: rateAgain ? "block" : "none" }}>
-              <Grid container>
-                <Grid item>
-                  <Typography component='legend'>Add Rating: </Typography>
-                </Grid>
-                <Grid item>
-                  <Rating
-                    name='rating-controlled'
-                    sx={{ paddingTop: "5px" }}
-                    value={value}
-                    size='small'
-                    onChange={(event, newValue) => {
-                      onChangeRatingValueHandler(newValue);
-                    }}
-                  />
-                </Grid>
-              </Grid>
+            <Grid item>
+              <Rating size='small' value={3} readOnly></Rating>
             </Grid>
-          </>
-        )}
+          </Grid>
+        </Grid>
       </Grid>
-    </Menu>
+    </Box>
   );
 };
 

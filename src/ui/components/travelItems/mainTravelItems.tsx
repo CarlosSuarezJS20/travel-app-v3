@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, Collapse, Grid, useMediaQuery } from "@mui/material";
 
 import { makeStyles } from "@mui/styles";
 import { useGetTravelItemsQuery } from "../../../store/features/travelItemsSlice/traveltems";
+import { useRequestAllAverageRatingsQuery } from "../../../store/features/ratingsSlice/ratings";
 
-import { useAppSelector } from "../../../store/storeHooks";
+import { useAppSelector, useAppDispatch } from "../../../store/storeHooks";
+import { fetchItemsRatingFromApi } from "../../../store/reducers/ratingItemsReducer";
 
 import SingleTravelItem from "../singleTravelItem/SingletravelItem";
 import theme from "../../../theme";
@@ -16,17 +18,30 @@ interface PropsItemsBox {
 }
 
 const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
+  const dispatch = useAppDispatch();
+  const matches = useMediaQuery(theme.breakpoints.down("sm"));
   const searchFeatureItemsStateBody = useAppSelector(
     (state) => state.searchFeatureReducer.searchBody
   );
   const { data, isError, isLoading } = useGetTravelItemsQuery(
     searchFeatureItemsStateBody
   );
-  const matches = useMediaQuery(theme.breakpoints.down("sm"));
+  const {
+    data: ratings,
+    isError: isRatingsReqError,
+    isLoading: isRatingsReqLoading,
+  } = useRequestAllAverageRatingsQuery();
+
+  useEffect(() => {
+    if (data && ratings) {
+      dispatch(fetchItemsRatingFromApi(ratings!));
+    }
+  }, [data, ratings, dispatch]);
 
   let travelItemsElements;
 
   if (data) {
+    // requesting for ratings only if the items exist
     travelItemsElements = data.map((item) => (
       <Grid sm={4} md={2.4} item key={item.id}>
         <SingleTravelItem
@@ -48,9 +63,9 @@ const ItemsBox: React.FC<PropsItemsBox> = ({ isSearchBoxOpen }) => {
       <Collapse in={isSearchBoxOpen}>
         <Box sx={{ height: "70px" }} />
       </Collapse>
-      {isLoading ? (
+      {isLoading || isRatingsReqLoading ? (
         <Typography>is Loading....</Typography>
-      ) : isError ? (
+      ) : isError || isRatingsReqError ? (
         <Typography>there is an error!</Typography>
       ) : (
         <Grid

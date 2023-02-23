@@ -37,7 +37,7 @@ const SingleTravelItem: React.FC<PropsTravelItem> = ({
         borderRadius: "5px",
       }}>
       <Grid container direction='column'>
-        <Grid container justifyContent='space-between'>
+        <Grid container justifyContent='space-between' alignItems='flex-end'>
           <Grid item>
             <ItemRating itemId={id} />
           </Grid>

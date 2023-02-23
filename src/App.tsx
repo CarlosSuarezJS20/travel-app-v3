@@ -26,7 +26,6 @@ const App = () => {
   // I'm using this useEffect to hide the search bar if user leaves the search-travel path
   useEffect(() => {
     if (currentLocation.pathname !== "/search-travel" && isSearchBoxOpen) {
-      console.log(isSearchBoxOpen);
       setIsSearchBoxOpen(false);
     }
   }, [currentLocation.pathname, isSearchBoxOpen, setIsSearchBoxOpen]);
