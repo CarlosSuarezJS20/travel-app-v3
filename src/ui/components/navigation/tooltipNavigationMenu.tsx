@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
-import { profileMenuToolTipItems } from "../../aux/navigationItems";
+import { profileMenuToolTipItems } from "../../utils/navigationItems";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import theme from "../../../theme";

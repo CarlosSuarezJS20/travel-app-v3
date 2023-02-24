@@ -25,3 +25,14 @@ export const getRatingStatsForCard = (
       : 0;
   return { avgRating, numUsers };
 };
+
+export const getUserRating = (
+  ratings: itemRating[],
+  itemId: string,
+  userId: string
+): number => {
+  const travelItem = ratings.find(
+    (rating) => rating.cardId === itemId && rating.userId === userId
+  );
+  return travelItem ? travelItem.cardRating : 0;
+};

@@ -12,7 +12,7 @@ import { useAppSelector } from "../../../store/storeHooks";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 // Helper functions:
-import { getRatingStatsForCard } from "../../aux/helperFunctions";
+import { getRatingStatsForCard } from "../../utils/ratingHelperFunctions";
 import RatingToolTip from "./ratingToolTip";
 
 import { makeStyles } from "@mui/styles";
@@ -40,7 +40,6 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
       open={isOpen}
       disableFocusListener
       disableHoverListener
-      disableTouchListener
       sx={{ background: "white" }}
       title={
         <RatingToolTip itemId={itemId} closeToolTip={toolTipCloseHandler} />
@@ -63,13 +62,16 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
           <Grid item>
             <IconButton sx={{ padding: "0" }}>
               {isOpen ? (
-                <HighlightOffIcon fontSize='medium' />
+                <HighlightOffIcon
+                  sx={{ color: theme.palette.common.purple }}
+                  fontSize='medium'
+                />
               ) : (
                 <ExpandMoreIcon fontSize='medium' />
               )}
             </IconButton>
           </Grid>
-          <Grid item alignSelf='flex-end'>
+          <Grid item>
             <Typography
               sx={{ fontSize: "0.9em", paddingLeft: "0.5em" }}
               component='legend'>
