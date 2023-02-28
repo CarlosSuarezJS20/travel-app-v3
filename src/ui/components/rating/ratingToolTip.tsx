@@ -20,8 +20,8 @@ const RatingToolTip: React.FC<RatingProps> = ({ itemId, closeToolTip }) => {
   const userRating = getUserRating(ratings, itemId, userId);
 
   return (
-    <Box>
-      <Grid direction='column' container>
+    <Box sx={{ color: "#000000", paddingTop: "0.5em" }}>
+      <Grid direction='column' gap={1} container>
         <Grid item>
           <Grid container justifyContent='center' alignItems='center'>
             <Grid item>
@@ -32,28 +32,55 @@ const RatingToolTip: React.FC<RatingProps> = ({ itemId, closeToolTip }) => {
               ) : (
                 <Grid
                   sx={{
+                    cursor: "pointer",
                     textDecoration: "underline",
                     "&:hover": { color: theme.palette.common.purple },
                   }}
                   container
                   justifyContent='flex-start'
                   alignItems='center '
-                  gap={0.5}
-                  onClick={closeToolTip}>
+                  gap={0.5}>
                   <Grid item>
                     <StarsIcon fontSize='small' />
                   </Grid>
                   <Grid item>
-                    <Typography fontSize='1em'>Rate this card?</Typography>
+                    <Typography fontSize='1em' onClick={closeToolTip}>
+                      Rate this card?
+                    </Typography>
                   </Grid>
                 </Grid>
               )}
             </Grid>
             <Grid item sx={{ display: userRating > 0 ? "block" : "none" }}>
-              <Rating size='small' value={userRating} readOnly></Rating>
+              <Grid container direction='column'>
+                <Grid item>
+                  <Rating size='small' value={userRating} readOnly />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
+        {userRating > 0 && (
+          <Grid
+            sx={{
+              cursor: "pointer",
+              textDecoration: "underline",
+              "&:hover": { color: theme.palette.common.purple },
+            }}
+            container
+            justifyContent='center'
+            alignItems='center '
+            gap={0.5}>
+            <Grid item>
+              <StarsIcon fontSize='small' />
+            </Grid>
+            <Grid item>
+              <Typography fontSize='1em' onClick={closeToolTip}>
+                Rate this card?
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

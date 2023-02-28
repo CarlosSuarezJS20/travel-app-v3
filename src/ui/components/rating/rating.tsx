@@ -5,9 +5,12 @@ import {
   Box,
   Typography,
   Tooltip,
+  TooltipProps,
+  tooltipClasses,
   ClickAwayListener,
   IconButton,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { useAppSelector } from "../../../store/storeHooks";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -15,10 +18,18 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getRatingStatsForCard } from "../../utils/ratingHelperFunctions";
 import RatingToolTip from "./ratingToolTip";
 
-import { makeStyles } from "@mui/styles";
 import theme from "../../../theme";
 
-const useStyles = makeStyles(() => ({}));
+const CustomeTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.arrow}`]: {
+    color: theme.palette.common.white,
+  },
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+  },
+}));
 
 const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
   const ratings = useAppSelector((state) => state.ratings.ratings);
@@ -33,54 +44,55 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
   };
 
   return (
-    <Tooltip
-      PopperProps={{
-        disablePortal: true,
-      }}
-      open={isOpen}
-      disableFocusListener
-      disableHoverListener
-      sx={{ background: "white" }}
-      title={
-        <RatingToolTip itemId={itemId} closeToolTip={toolTipCloseHandler} />
-      }
-      arrow
-      placement='bottom'>
-      <Box
-        sx={{ cursor: "pointer" }}
-        onClick={isOpen ? toolTipCloseHandler : toolTipOpenHandler}>
-        <Grid container justifyContent='flex-start' alignItems='flex-end'>
-          <Grid item>
-            <Rating
-              size='small'
-              sx={{ paddingTop: "8px" }}
-              name='read-only'
-              value={getRatingStatsForCard(ratings, itemId).avgRating}
-              readOnly
-            />
-          </Grid>
-          <Grid item>
-            <IconButton sx={{ padding: "0" }}>
-              {isOpen ? (
-                <HighlightOffIcon
-                  sx={{ color: theme.palette.common.purple }}
-                  fontSize='medium'
+    <ClickAwayListener onClickAway={toolTipCloseHandler}>
+      <Box>
+        <CustomeTooltip
+          open={isOpen}
+          onClose={toolTipCloseHandler}
+          disableFocusListener
+          disableHoverListener
+          title={
+            <RatingToolTip itemId={itemId} closeToolTip={toolTipCloseHandler} />
+          }
+          arrow
+          placement='bottom'>
+          <Box sx={{ cursor: "pointer" }}>
+            <Grid container justifyContent='flex-start' alignItems='flex-end'>
+              <Grid item>
+                <Rating
+                  size='small'
+                  sx={{ paddingTop: "8px" }}
+                  name='read-only'
+                  value={getRatingStatsForCard(ratings, itemId).avgRating}
+                  readOnly
                 />
-              ) : (
-                <ExpandMoreIcon fontSize='medium' />
-              )}
-            </IconButton>
-          </Grid>
-          <Grid item>
-            <Typography
-              sx={{ fontSize: "0.9em", paddingLeft: "0.5em" }}
-              component='legend'>
-              {getRatingStatsForCard(ratings, itemId).numUsers}
-            </Typography>
-          </Grid>
-        </Grid>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  sx={{ padding: "0" }}
+                  onClick={isOpen ? toolTipCloseHandler : toolTipOpenHandler}>
+                  {isOpen ? (
+                    <HighlightOffIcon
+                      sx={{ color: theme.palette.common.purple }}
+                      fontSize='medium'
+                    />
+                  ) : (
+                    <ExpandMoreIcon fontSize='medium' />
+                  )}
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Typography
+                  sx={{ fontSize: "0.9em", paddingLeft: "0.5em" }}
+                  component='legend'>
+                  {getRatingStatsForCard(ratings, itemId).numUsers}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        </CustomeTooltip>
       </Box>
-    </Tooltip>
+    </ClickAwayListener>
   );
 };
 
