@@ -3,9 +3,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import authenticationReducer from "./reducers/authenticationReducer";
 import searchFeatureReducer from "./reducers/searchFeatureReduce";
 import navigationTabsReducer from "./reducers/navigationTabsReducer";
-import ratingItemsReducer, {
-  ratingItemsSlice,
-} from "./reducers/ratingItemsReducer";
+import ratingItemsReducer from "./reducers/ratingItemsReducer";
+import mainModalReducer from "./reducers/mainModalReducer";
 
 import { authApi } from "./features/apis/authApi";
 import { getItemsReqApi } from "./features/apis/itemsApi";
@@ -21,6 +20,7 @@ export const rootStore = configureStore({
     searchFeatureReducer: searchFeatureReducer,
     navTabsPositionReducer: navigationTabsReducer,
     ratings: ratingItemsReducer,
+    mainModalReducer: mainModalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([

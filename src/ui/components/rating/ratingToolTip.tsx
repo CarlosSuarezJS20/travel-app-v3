@@ -11,10 +11,10 @@ const useStyles = makeStyles(() => ({}));
 
 interface RatingProps {
   itemId: string;
-  closeToolTip: () => void;
+  openModalHanler: () => void;
 }
 
-const RatingToolTip: React.FC<RatingProps> = ({ itemId, closeToolTip }) => {
+const RatingToolTip: React.FC<RatingProps> = ({ itemId, openModalHanler }) => {
   const ratings = useAppSelector((state) => state.ratings.ratings);
   const userId = "9a9UHQYFtLhQYewSRCn36AeH4tP2";
   const userRating = getUserRating(ratings, itemId, userId);
@@ -39,14 +39,13 @@ const RatingToolTip: React.FC<RatingProps> = ({ itemId, closeToolTip }) => {
                   container
                   justifyContent='flex-start'
                   alignItems='center '
-                  gap={0.5}>
+                  gap={0.5}
+                  onClick={openModalHanler}>
                   <Grid item>
                     <StarsIcon fontSize='small' />
                   </Grid>
                   <Grid item>
-                    <Typography fontSize='1em' onClick={closeToolTip}>
-                      Rate this card?
-                    </Typography>
+                    <Typography fontSize='1em'>Rate this card?</Typography>
                   </Grid>
                 </Grid>
               )}
@@ -75,8 +74,8 @@ const RatingToolTip: React.FC<RatingProps> = ({ itemId, closeToolTip }) => {
               <StarsIcon fontSize='small' />
             </Grid>
             <Grid item>
-              <Typography fontSize='1em' onClick={closeToolTip}>
-                Rate this card?
+              <Typography fontSize='1em' onClick={openModalHanler}>
+                Rate again?
               </Typography>
             </Grid>
           </Grid>

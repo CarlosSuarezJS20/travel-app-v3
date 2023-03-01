@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import {
   Rating,
   Grid,
@@ -11,14 +11,16 @@ import {
   IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useAppSelector } from "../../../store/storeHooks";
+import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 // Helper functions:
 import { getRatingStatsForCard } from "../../utils/ratingHelperFunctions";
 import RatingToolTip from "./ratingToolTip";
+import MainModal from "../../utils/mainModal";
 
 import theme from "../../../theme";
+import { handlesMainModalIsOpen } from "../../../store/reducers/mainModalReducer";
 
 const CustomeTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -32,16 +34,22 @@ const CustomeTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
+  const dispatch = useAppDispatch();
   const ratings = useAppSelector((state) => state.ratings.ratings);
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const handleModalIsOpen = () => {
+    setIsOpen(false);
+    dispatch(handlesMainModalIsOpen(true));
+  };
 
   const toolTipOpenHandler = () => {
     setIsOpen(true);
   };
 
-  const toolTipCloseHandler = () => {
+  const toolTipCloseHandler = useCallback(() => {
     setIsOpen(false);
-  };
+  }, [isOpen]);
 
   return (
     <ClickAwayListener onClickAway={toolTipCloseHandler}>
@@ -52,7 +60,10 @@ const ItemRating: React.FC<{ itemId: string }> = ({ itemId }) => {
           disableFocusListener
           disableHoverListener
           title={
-            <RatingToolTip itemId={itemId} closeToolTip={toolTipCloseHandler} />
+            <RatingToolTip
+              openModalHanler={handleModalIsOpen}
+              itemId={itemId}
+            />
           }
           arrow
           placement='bottom'>
